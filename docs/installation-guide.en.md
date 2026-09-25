@@ -9,9 +9,20 @@ These apply to **every** install path described below:
 1. **Additive only.** Every operation is `mkdir -p` + `cp -R` (or `ln -s`). Nothing is removed, renamed, or overwritten.
 2. **Skip on conflict.** If the destination already exists, the installer prints `SKIP` and moves on. It does **not** overwrite, does **not** prompt for overwrite, does **not** delete the old copy.
 3. **Idempotent.** Running the installer twice produces the same final state as running it once.
-4. **Dry-run by default.** The script prints what it would do and exits 0 without writing. `--apply` flips it to write mode.
-5. **No `rm` anywhere in the script.** `grep -rn rm scripts/install.sh` returns no matches for destructive patterns. The script contains a static guard that aborts if asked to delete anything.
+4. **Dry-run by default.** The script prints what it would do and exits 0 without writing. `--apply` / `-Apply` flips it to write mode.
+5. **No destructive commands anywhere.** `install.sh` static guard blocks `rm`, `unlink`, `mv`, `rmdir`; `install.ps1` blocks `Remove-Item`, `Move-Item`, `Rename-Item`, `Clear-Item`, `Clear-Content` and their aliases (`del`, `rm`, `mv`, etc.). Any match exits 78.
 6. **No mutation of the source repo.** The installer never edits files inside `/Users/letmlook/code/letmbootstrap/` — it only reads from it.
+
+## Two installers
+
+The repo ships two functionally identical installers:
+
+| Script | Platform | Flag style |
+|---|---|---|
+| `scripts/install.sh` | Linux / macOS | `--apply`, `--platform <name>`, `--symlink`, `--help` |
+| `scripts/install.ps1` | Windows (PowerShell 5.1 / Core 7+) | `-Apply`, `-Platform <name>`, `-Symlink`, `-Help` |
+
+Same detectors, same skip policy, same guarantees — only the syntax differs. Windows users run `.ps1`; everyone else runs `.sh`. Both support the same set of features beyond the apply flag.
 
 ## The skill payload
 
@@ -166,18 +177,21 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.config/ope
 ## What the installer does, in detail
 
 ```
+# bash
 ./scripts/install.sh [--apply] [--platform <name>] [--agent-name <name>] [--symlink] [--with-templates]
+
+# PowerShell
+.\scripts\install.ps1 [-Apply] [-Platform <name>] [-AgentName <name>] [-Symlink] [-Help]
 ```
 
-| Flag | Meaning |
-|---|---|
-| *(none)* | Dry-run for every detected platform. Prints planned ops and exits. |
-| `--apply` | Actually write. Without this, the script is read-only. |
-| `--platform <name>` | Restrict to one platform. Valid: `mavis`, `claude-code`, `codex`, `cursor`, `gemini-cli`, `aider`, `devin`, `opencode`. Repeatable. |
-| `--agent-name <name>` | For Mavis only — which Agent to install under. Defaults to `mavis`. |
-| `--symlink` | Symlink instead of copy. Lets you edit the repo and have changes reflected live. |
-| `--with-templates` | Also install `templates/` and a copy of `docs/methodology.md` next to the skill. Off by default — keeps the payload minimal. |
-| `--help` | Print usage. |
+| bash flag | PowerShell param | Meaning |
+|---|---|---|
+| *(none)* | *(none)* | Dry-run for every detected platform. Prints planned ops and exits. |
+| `--apply` | `-Apply` | Actually write. Without this, the script is read-only. |
+| `--platform <name>` | `-Platform <name>` | Restrict to one platform. Valid: `mavis`, `claude-code`, `codex`, `cursor`, `gemini-cli`, `aider`, `devin`, `opencode`. Repeatable. |
+| `--agent-name <name>` | `-AgentName <name>` | For Mavis only — which Agent to install under. Defaults to `mavis`. |
+| `--symlink` | `-Symlink` | Symlink instead of copy. Lets you edit the repo and have changes reflected live. |
+| `--help` | `-Help` | Print usage. |
 
 The script detects installed platforms by looking for these markers:
 
@@ -208,9 +222,15 @@ The script does not delete the existing copy for you. If you want to update, you
 ./scripts/install.sh --apply --symlink
 ```
 
-Creates `~/.claude/skills/letmbootstrap → /Users/letmlook/code/letmbootstrap/skills/letmbootstrap`. Now every edit in the repo is picked up live by your Agent without re-installing.
+```powershell
+.\scripts\install.ps1 -Apply -Symlink
+```
+
+Creates `~/.claude/skills/letmbootstrap → /Users/letmbootstrap/skills/letmbootstrap`. Now every edit in the repo is picked up live by your Agent without re-installing.
 
 **Trade-off:** if you move or rename the repo, every symlink breaks. Use a stable absolute path.
+
+**Symlinks on Windows:** PowerShell's `New-Item -ItemType SymbolicLink` requires **Developer Mode** or admin privileges on Windows. If creation fails, the error message is explicit — no silent fallback to copy.
 
 ## Troubleshooting
 
@@ -235,7 +255,13 @@ It shouldn't have — the installer skips on conflict and the skill itself asks 
 The skill has no uninstall path on purpose. To remove manually:
 
 ```bash
+# Linux / macOS
 rm -rf <install-path>/letmbootstrap
+```
+
+```powershell
+# Windows (PowerShell)
+Remove-Item -Recurse -Force <install-path>\letmbootstrap
 ```
 
 This is something **you** do. The skill and installer never do it for you.

@@ -11,9 +11,20 @@
 1. **只做加法。** 每次操作都是 `mkdir -p` + `cp -R`（或 `ln -s`）。不删、不改名、不覆盖。
 2. **冲突跳过。** 如果目标已存在，安装器打印 `SKIP` 继续。不覆盖、不询问覆盖、不删旧副本。
 3. **幂等。** 跑两次和跑一次最终状态相同。
-4. **默认干跑。** 脚本打印它会做什么然后退出 0，不写。`--apply` 切换到写入模式。
-5. **脚本里无 `rm`。** `grep -nE '^[^#]*\b(rm |unlink |mv |rmdir )\b' scripts/install.sh` 对破坏性模式无匹配。脚本顶部的静态守卫在被要求删除任何东西时中止。
+4. **默认干跑。** 脚本打印它会做什么然后退出 0，不写。`--apply` / `-Apply` 切换到写入模式。
+5. **脚本里无破坏性命令。** `install.sh` 顶部静态守卫拦 `rm`、`unlink`、`mv`、`rmdir`；`install.ps1` 拦 `Remove-Item`、`Move-Item`、`Rename-Item`、`Clear-Item`、`Clear-Content` 以及对应别名（`del`、`rm`、`mv` 等）。任何匹配就退出 78。
 6. **不改源仓库。** 安装器从不编辑 `/Users/letmlook/code/letmbootstrap/` 里的文件 —— 只读。
+
+## 两个安装器
+
+仓库同时提供两个功能等价的安装器：
+
+| 脚本 | 平台 | 标志风格 |
+|---|---|---|
+| `scripts/install.sh` | Linux / macOS | `--apply`、`--platform <名>`、`--symlink`、`--help` |
+| `scripts/install.ps1` | Windows（PowerShell 5.1 / Core 7+） | `-Apply`、`-Platform <名>`、`-Symlink`、`-Help` |
+
+检测器、跳过策略、保证完全一致 —— 只是语法不同。Windows 用户跑 `.ps1`；其他平台跑 `.sh`。两个都支持 `-Apply` / `--apply` 之外的相同功能集。
 
 ## 技能载荷
 
@@ -26,7 +37,7 @@ skills/letmbootstrap/
 
 仓库里的其他东西（模板、文档、示例、脚本）支撑技能但不是安装载荷的一部分。Agent 只需要 `SKILL.md` 就能调用技能；模板和文档通过技能正文里的绝对路径引用。
 
-如果你想要更丰富的安装（例如模板和技能一起），传 `--with-templates`。默认载荷最小。
+如果你想要更丰富的安装（例如模板和技能一起），传 `--with-templates` / `-WithTemplates`。默认载荷最小。
 
 ## 各平台参考
 
@@ -168,18 +179,21 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.config/ope
 ## 安装器做了什么，细节
 
 ```
+# bash
 ./scripts/install.sh [--apply] [--platform <名>] [--agent-name <名>] [--symlink] [--with-templates]
+
+# PowerShell
+.\scripts\install.ps1 [-Apply] [-Platform <名>] [-AgentName <名>] [-Symlink] [-Help]
 ```
 
-| 标志 | 含义 |
-|---|---|
-| *（无）* | 对所有检测到的平台干跑。打印计划的操作并退出。 |
-| `--apply` | 实际写。不加这个脚本是只读的。 |
-| `--platform <名>` | 限制单一平台。可重复。合法：mavis、claude-code、codex、cursor、gemini-cli、aider、devin、opencode。 |
-| `--agent-name <名>` | 仅 Mavis —— 装到哪个 Agent 下。默认 `mavis`。 |
-| `--symlink` | 用软链而不是复制。改仓库时自动生效。 |
-| `--with-templates` | 同时装 `templates/` 和 `docs/methodology.md` 副本。默认关 —— 保持载荷最小。 |
-| `--help` | 打印用法。 |
+| bash 标志 | PowerShell 参数 | 含义 |
+|---|---|---|
+| *（无）* | *（无）* | 对所有检测到的平台干跑。打印计划的操作并退出。 |
+| `--apply` | `-Apply` | 实际写。不加这个脚本是只读的。 |
+| `--platform <名>` | `-Platform <名>` | 限制单一平台。可重复。合法：mavis、claude-code、codex、cursor、gemini-cli、aider、devin、opencode。 |
+| `--agent-name <名>` | `-AgentName <名>` | 仅 Mavis —— 装到哪个 Agent 下。默认 `mavis`。 |
+| `--symlink` | `-Symlink` | 用软链而不是复制。改仓库时自动生效。 |
+| `--help` | `-Help` | 打印用法。 |
 
 脚本通过看这些标记来检测安装的平台：
 
@@ -210,9 +224,17 @@ SKIP: ~/.claude/skills/letmbootstrap 已存在。要更新，手动删除后再�
 ./scripts/install.sh --apply --symlink
 ```
 
+或 PowerShell：
+
+```powershell
+.\scripts\install.ps1 -Apply -Symlink
+```
+
 创建 `~/.claude/skills/letmbootstrap → /Users/letmlook/code/letmbootstrap/skills/letmbootstrap`。现在仓库里每次编辑都会被你的 Agent 实时看到，不用重装。
 
 **权衡：** 如果你移动或改名仓库，所有软链都断。用稳定的绝对路径。
+
+**Windows 上的软链：** PowerShell 的 `New-Item -ItemType SymbolicLink` 在 Windows 上需要 **开发人员模式** 或管理员权限。如果创建失败，错误会明确指出 —— 不静默回退到复制。
 
 ## 故障排查
 
@@ -237,7 +259,13 @@ SKIP: ~/.claude/skills/letmbootstrap 已存在。要更新，手动删除后再�
 技能刻意没有卸载路径。要手动移除：
 
 ```bash
+# Linux / macOS
 rm -rf <安装路径>/letmbootstrap
+```
+
+```powershell
+# Windows (PowerShell)
+Remove-Item -Recurse -Force <安装路径>\letmbootstrap
 ```
 
 这是 **你自己** 做的。技能和安装器都从不替你做。
@@ -263,18 +291,34 @@ rm -rf <安装路径>/letmbootstrap
 **模式 A — 手动替换**（生产推荐）：
 
 ```bash
+# Linux / macOS
 cd /Users/letmlook/code/letmbootstrap && git pull
 
 # 对每个安装目标，替换目录：
 cp -R skills/letmbootstrap "$HOME/.claude/skills/letmbootstrap"
 ```
 
-你自己执行 `rm -rf`，然后 `cp -R`。安装器两个都不做。
+```powershell
+# Windows (PowerShell)
+cd C:\path\to\letmbootstrap
+git pull
+
+# 对每个安装目标，替换目录：
+Copy-Item -Recurse -Force skills\letmbootstrap $HOME\.claude\skills\letmbootstrap
+```
+
+你自己执行删除，然后复制。安装器两个都不做。
 
 **模式 B — 开发期软链**（技能作者推荐）：
 
 ```bash
+# Linux / macOS
 ./scripts/install.sh --apply --symlink
+```
+
+```powershell
+# Windows
+.\scripts\install.ps1 -Apply -Symlink
 ```
 
 仓库里的编辑实时生效。仅在你积极迭代时用。

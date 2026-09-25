@@ -1,3 +1,5 @@
+<!-- English mirror | 中文默认版本: INSTALL.md -->
+
 # INSTALL — put the letmbootstrap skill on your Agent
 
 > **One-page guide.** Want details? See [`docs/installation-guide.md`](docs/installation-guide.md). Want to know which platforms are supported? See [`docs/agent-compatibility.md`](docs/agent-compatibility.md).
@@ -25,7 +27,9 @@ The skill itself is **additive and non-destructive**. It never deletes or overwr
 
 ## Quick install (recommended)
 
-The installer is **dry-run by default** — it prints what it would do and exits without writing anything. To actually install, pass `--apply`.
+The installer is **dry-run by default** — it prints what it would do and exits without writing anything. To actually install, pass the apply flag.
+
+### Linux / macOS (bash)
 
 ```bash
 # from inside the letmbootstrap repo
@@ -49,13 +53,41 @@ cd /Users/letmlook/code/letmbootstrap
 ./scripts/install.sh --apply --symlink
 ```
 
+### Windows (PowerShell)
+
+```powershell
+# from inside the letmbootstrap repo
+cd C:\path\to\letmbootstrap
+
+# 1. See what would happen on your machine
+.\scripts\install.ps1
+
+# 2. Install globally for the detected platform(s)
+.\scripts\install.ps1 -Apply
+
+# 3. Install for a specific platform only
+.\scripts\install.ps1 -Apply -Platform claude-code
+.\scripts\install.ps1 -Apply -Platform mavis
+.\scripts\install.ps1 -Apply -Platform codex
+
+# 4. Install into a specific Agent name (Mavis only)
+.\scripts\install.ps1 -Apply -Platform mavis -AgentName my-dev-agent
+
+# 5. Symlink instead of copy (picks up repo edits automatically)
+.\scripts\install.ps1 -Apply -Symlink
+```
+
+> Either Windows PowerShell 5.1 or PowerShell Core 7+ works. Windows 10 1809+ ships with `pwsh`; older versions need to install PowerShell Core first.
+
+## Shared guarantees (both scripts enforce)
+
 The installer:
 
 - ✅ Detects which platforms exist on your machine
 - ✅ Copies `skills/letmbootstrap/` into the right location
 - ✅ Skips any existing installation (no overwrites, no deletes)
 - ✅ Reports skipped locations so you can investigate
-- ❌ Never runs `rm`, `unlink`, or anything destructive
+- ❌ Never runs `rm`, `unlink`, `Remove-Item`, `Move-Item`, or anything destructive
 - ❌ Never overwrites an existing skill
 
 ## Manual install (no script)
@@ -76,6 +108,17 @@ ls "$AGENT_DIR/letmbootstrap/SKILL.md"
 ```
 
 Reload the Agent session so it picks up the new skill. Trigger it with: "letmbootstrap init" or "搭三件套".
+
+**Windows PowerShell version:**
+
+```powershell
+$agentDir = Join-Path $HOME ".minimax/agents/<your-agent-name>/skills"
+New-Item -ItemType Directory -Path $agentDir -Force | Out-Null
+Copy-Item -Recurse `
+    C:\path\to\letmbootstrap\skills\letmbootstrap `
+    $agentDir
+Get-ChildItem "$agentDir\letmbootstrap\SKILL.md"
+```
 
 ### Claude Code
 
@@ -106,7 +149,7 @@ mkdir -p "$HOME/.codex/skills"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.codex/skills/"
 ```
 
-If Codex doesn't yet load external skills on your version, fall back to inline-invocation: paste the skill body into chat and say "follow this procedure".
+If Codex doesn't yet load external skills on your version, fall back to inline-invocation: paste the skill body into chat and say "follow this procedure."
 
 ### Cursor
 
@@ -188,6 +231,12 @@ rm -rf "$HOME/.claude/skills/letmbootstrap"
 # (or whatever path you installed to)
 ```
 
+**Windows PowerShell:**
+
+```powershell
+Remove-Item -Recurse -Force "$HOME\.claude\skills\letmbootstrap"
+```
+
 This is something **you** do, not something the skill does.
 
 ## Updating the skill
@@ -202,7 +251,7 @@ cd /Users/letmlook/code/letmbootstrap && git pull
 cp -R skills/letmbootstrap "$HOME/.claude/skills/letmbootstrap"
 ```
 
-Or, for development, install once with `--symlink` so every repo edit is picked up live (no re-install needed).
+Or, for development, install once with `--symlink` (bash) or `-Symlink` (PowerShell) so every repo edit is picked up live (no re-install needed).
 
 ## Next step
 

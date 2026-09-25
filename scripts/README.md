@@ -6,11 +6,14 @@
 
 ## 这里有什么
 
-| 文件 | 作用 | 默认模式 |
-|---|---|---|
-| `install.sh` | 把 `letmbootstrap` 技能装到支持的 Agent 平台 | 干跑（打印计划，不写） |
+| 文件 | 作用 | 默认模式 | 平台 |
+|---|---|---|---|
+| `install.sh` | 把 `letmbootstrap` 技能装到支持的 Agent 平台 | 干跑（打印计划，不写） | Linux / macOS |
+| `install.ps1` | 同上，PowerShell 实现 | 干跑 | Windows / 跨平台 |
 
-## `install.sh` — 速览
+两个脚本行为完全一致（同样的检测器、同样的跳过策略、同样的非破坏性保证）。选你平台上能跑的那个。
+
+## `install.sh` — 速览（Linux / macOS）
 
 ```bash
 ./scripts/install.sh                                # 干跑所有检测到的平台
@@ -20,11 +23,25 @@
 ./scripts/install.sh --help                         # 用法
 ```
 
+## `install.ps1` — 速览（Windows / PowerShell）
+
+```powershell
+.\scripts\install.ps1                                 # 干跑所有检测到的平台
+.\scripts\install.ps1 -Apply                          # 实际安装
+.\scripts\install.ps1 -Apply -Platform claude-code    # 只装一个平台
+.\scripts\install.ps1 -Apply -Symlink                 # 用软链而不是复制
+.\scripts\install.ps1 -Help                           # 用法
+```
+
+> PowerShell 版本需要 PowerShell Core 7+（`pwsh`）或 Windows PowerShell 5.1+。Windows 10 1809+ 自带 `pwsh`，旧版本需要先装。
+
+## 共同保证（两个脚本都遵守）
+
 **作用：** 把 `skills/letmbootstrap/` 复制到每个检测到的 Agent 平台的正确位置。检测 Mavis、Claude Code、Cursor、Gemini CLI、Codex CLI、Aider、Devin、OpenCode。
 
 **永远不做：**
 
-- `rm`、`unlink`、`mv`、`rmdir` —— 脚本顶部的静态守卫一旦发现非注释行出现这些模式就中止脚本
+- `rm`、`unlink`、`mv`、`rmdir` / `Remove-Item`、`Move-Item`、`Rename-Item` —— 脚本顶部的静态守卫一旦发现非注释行出现这些模式就中止脚本
 - 覆盖已存在的技能安装
 - 改源仓库
 
@@ -54,16 +71,18 @@ if grep -nE '^[^#]*\b(rm |unlink |mv |rmdir )\b' "$0" >/dev/null 2>&1; then
 fi
 ```
 
-这个守卫在 **任何其他代码之前** 跑。如果非注释行出现破坏性模式，脚本以退出码 78（EX_CONFIG）中止。守卫不能被标志或环境变量绕过。
+`install.ps1` 顶部是 PowerShell 等价版本。两个守卫在 **任何其他代码之前** 跑。如果非注释行出现破坏性模式，脚本以退出码 78（EX_CONFIG）中止。守卫不能被标志或环境变量绕过。
 
 加新脚本时：
 
-- **要么** 把静态守卫复制到新脚本，**要么**
+- **要么** 把静态守卫模式复制到新脚本，**要么**
 - **在 PR 描述里解释** 为什么新脚本不需要（例如，它本来就是只读的）。
 
 ## 测脚本
 
 没有测试套件。验证步骤是：
+
+**Bash (`install.sh`)：**
 
 ```bash
 # 1. 语法
@@ -85,6 +104,33 @@ mavis-trash "$TMP"
 
 # 5. 幂等：再跑一次，期望 SKIP
 HOME="$TMP" ./scripts/install.sh --apply --platform claude-code
+```
+
+**PowerShell (`install.ps1`)：**
+
+```powershell
+# 1. 静态守卫测试（如果注入破坏性模式，脚本应该拒绝）
+$tmp = Join-Path $env:TEMP "lb-test-$pid"
+New-Item -ItemType Directory -Path $tmp | Out-Null
+Copy-Item scripts/install.ps1 "$tmp\install.ps1"
+Add-Content "$tmp\install.ps1" "`nRemove-Item -Path foo"
+& "$tmp\install.ps1" -Help
+# 期望：退出码 78，stderr 含 "REFUSE"
+Remove-Item -Recurse -Force $tmp
+# ^ 测试清理自己用 Remove-Item，没问题 —— 是用户的选择
+
+# 2. help 文本
+.\scripts\install.ps1 -Help
+
+# 3. 干跑
+.\scripts\install.ps1
+
+# 4. 用假 HOME 实测 -Apply
+$fakeHome = Join-Path $env:TEMP "lb-fake-$pid"
+New-Item -ItemType Directory -Path (Join-Path $fakeHome ".claude/skills") -Force | Out-Null
+$env:HOME = $fakeHome
+.\scripts\install.ps1 -Apply -Platform claude-code
+Get-ChildItem "$fakeHome\.claude\skills\letmbootstrap\SKILL.md"
 ```
 
 ## 本 README 不是

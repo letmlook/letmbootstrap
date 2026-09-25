@@ -15,6 +15,8 @@
 
 - **全面中文化** — 所有顶层文档、`docs/` 下文档、模板、脚本说明、示例、技能的 default 版本改为中文。
 - 英文版本以 `.en.md` 镜像形式保留在同目录，与中文版同步。
+- **Windows 安装器** — `scripts/install.ps1`（PowerShell 实现），与 `scripts/install.sh` 完全等价。覆盖 Mavis / Claude Code / Codex CLI / Cursor / Gemini CLI / Aider / Devin / OpenCode。Windows 用户跑 `.ps1`，其他平台跑 `.sh`。
+- **安装器双脚本** — 两个版本共享同一非破坏性保证；每个脚本顶部都有自己的静态守卫（`.sh` 用 grep 检查 POSIX 破坏性命令；`.ps1` 用运行时拼接 cmdlet 名避免自检测）。
 
 ### 变更
 
@@ -37,6 +39,7 @@
 - `templates/single-task-contract.md` — 单任务契约模板
 - `skills/letmbootstrap/SKILL.md` — 引导技能（顶部硬规则一节）
 - `scripts/install.sh` — 非破坏性安装器（静态守卫 + 默认干跑）
+- `scripts/install.ps1` — PowerShell 等价版本，Windows 原生
 - `examples/letmbootstrap-self/` — 技能输出的 dogfood 示例
 - `.gitignore` — macOS + 编辑器 + 临时文件排除
 - `ARCHITECTURE.md` — 五层架构总览

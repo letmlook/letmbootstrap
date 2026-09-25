@@ -31,7 +31,8 @@ Markdown / shell / Agent SKILL.md。无运行时。无构建。
 8. `FAQ.md` / `GLOSSARY.md` — 速查
 9. `templates/` — 三个可复制模板（见 `templates/README.md`）
 10. `skills/letmbootstrap/SKILL.md` — 引导技能
-11. `scripts/install.sh` — 非破坏性安装器（读静态守卫）
+11. `scripts/install.sh` — 非破坏性安装器，Linux/macOS（读静态守卫）
+12. `scripts/install.ps1` — PowerShell 等价版本，Windows/跨平台（同样有静态守卫）
 
 ## Where new things go（新东西放哪）
 
@@ -43,7 +44,7 @@ Markdown / shell / Agent SKILL.md。无运行时。无构建。
 | 加示例 | `examples/<项目名>/`（小巧、完整） |
 | 加决策记录 | `docs/decisions/NNNN-<短>.md` |
 | 加安装脚本 | `scripts/<名>.sh`（默认非破坏性） |
-| 加新平台安装路径 | 编辑 `scripts/install.sh` 检测器 + 在 `docs/agent-compatibility.md` 加一行 |
+| 加新平台安装路径 | 编辑 `scripts/install.sh` **和** `scripts/install.ps1` 检测器 + 在 `docs/agent-compatibility.md` 加一行 |
 | 加 FAQ 条目 | `FAQ.md` + 镜像到 `FAQ.en.md` |
 | 加术语条目 | `GLOSSARY.md` + 镜像到 `GLOSSARY.en.md` |
 | 调整宪法 | 本文件（≤ 80 行） |
@@ -55,8 +56,8 @@ Markdown / shell / Agent SKILL.md。无运行时。无构建。
 - [ ] `docs/methodology.md` 叙事从头到尾可读（≤ 1500 字）
 - [ ] README 的"快速上手"仍然准确
 - [ ] INSTALL.md 在安装流程变更后仍然准确
-- [ ] `./scripts/install.sh --help` 仍然可用
-- [ ] `./scripts/install.sh`（干跑，无标志）无报错
+- [ ] `./scripts/install.sh --help` 和 `.\scripts\install.ps1 -Help` 仍然可用
+- [ ] 两个安装器（干跑，无标志）均无报错
 - [ ] `scripts/` 下无新破坏性操作（非注释行无 `rm`、`unlink`、`mv`、`rmdir`）
 - [ ] 如改 `FAQ.md` 或 `GLOSSARY.md`，镜像到 `FAQ.en.md` / `GLOSSARY.en.md`
 
@@ -65,7 +66,7 @@ Markdown / shell / Agent SKILL.md。无运行时。无构建。
 - 不要膨胀成"元方法论框架"。
 - 不要为真实项目还没用到的东西加模板。
 - 不要写没有具体步骤的"哲学"。
-- 不要给 `scripts/install.sh` 加破坏性操作 —— 顶部的静态守卫是绑定的（见 `docs/decisions/0001-keep-skill-non-destructive.md`）。
+- 不要给 `scripts/install.sh` 或 `scripts/install.ps1` 加破坏性操作 —— 两个脚本顶部的静态守卫是绑定的（见 `docs/decisions/0001-keep-skill-non-destructive.md`）。
 - 不要在任何安装脚本里发 `uninstall` 子命令或 `--force` / `--reset` 标志。破坏性操作由用户自己执行。
 - 不要发到技能市场。安装一律直接来自本仓库。
 

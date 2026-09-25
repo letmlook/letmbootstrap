@@ -1,14 +1,19 @@
+<!-- English mirror | 中文默认版本: scripts/README.md -->
+
 # scripts/
 
 Host-side shell scripts that automate letmbootstrap on the user's machine. Every script in this directory is **non-destructive by default** — see [`../docs/decisions/0001-keep-skill-non-destructive.md`](../docs/decisions/0001-keep-skill-non-destructive.md).
 
-## What's here
+## What's in here
 
-| File | Purpose | Default mode |
-|---|---|---|
-| `install.sh` | Install the `letmbootstrap` skill into a supported Agent platform | dry-run (prints plan, no writes) |
+| File | Purpose | Default mode | Platform |
+|---|---|---|---|
+| `install.sh` | Install the `letmbootstrap` skill into a supported Agent platform | dry-run (prints plan, no writes) | Linux / macOS |
+| `install.ps1` | Same, PowerShell implementation | dry-run | Windows / cross-platform |
 
-## `install.sh` — at a glance
+The two scripts have identical behavior (same detectors, same skip policy, same non-destructive guarantee). Use whichever runs on your platform.
+
+## `install.sh` — at a glance (Linux / macOS)
 
 ```bash
 ./scripts/install.sh                                # dry-run for every detected platform
@@ -18,11 +23,25 @@ Host-side shell scripts that automate letmbootstrap on the user's machine. Every
 ./scripts/install.sh --help                         # usage
 ```
 
+## `install.ps1` — at a glance (Windows / PowerShell)
+
+```powershell
+.\scripts\install.ps1                                 # dry-run for every detected platform
+.\scripts\install.ps1 -Apply                          # actually install
+.\scripts\install.ps1 -Apply -Platform claude-code    # one platform only
+.\scripts\install.ps1 -Apply -Symlink                 # symlink instead of copy
+.\scripts\install.ps1 -Help                           # usage
+```
+
+> The PowerShell version requires PowerShell Core 7+ (`pwsh`) or Windows PowerShell 5.1+. Windows 10 1809+ ships with `pwsh`; older versions need to install it first.
+
+## Shared guarantees (both scripts enforce)
+
 **What it does:** copies `skills/letmbootstrap/` into the right location for each detected Agent platform. Detects Mavis, Claude Code, Cursor, Gemini CLI, Codex CLI, Aider, Devin, OpenCode.
 
 **What it never does:**
 
-- `rm`, `unlink`, `mv`, `rmdir` — the static guard at the top of the script aborts the script if any of these ever appear in non-comment lines
+- `rm`, `unlink`, `mv`, `rmdir` / `Remove-Item`, `Move-Item`, `Rename-Item` — the static guard at the top of each script aborts if any of these ever appear in non-comment lines
 - Overwrite an existing skill installation
 - Modify the source repo
 
@@ -52,16 +71,18 @@ if grep -nE '^[^#]*\b(rm |unlink |mv |rmdir )\b' "$0" >/dev/null 2>&1; then
 fi
 ```
 
-This guard runs **before** any other code. If any non-comment line ever grows a destructive pattern, the script aborts with exit code 78 (EX_CONFIG). The guard cannot be bypassed by flags or environment variables.
+`install.ps1` opens with the PowerShell equivalent. Both guards run **before** any other code. If any non-comment line ever grows a destructive pattern, the script aborts with exit code 78 (EX_CONFIG). The guard cannot be bypassed by flags or environment variables.
 
 When adding a new script:
 
-- **Either** copy the static guard into the new script, **or**
+- **Either** copy the static guard pattern into the new script, **or**
 - **Explain in the PR description** why the new script doesn't need one (e.g., it's read-only by construction).
 
 ## Testing a script
 
 There is no test suite. The verification steps are:
+
+**Bash (`install.sh`):**
 
 ```bash
 # 1. Syntax
@@ -83,6 +104,33 @@ mavis-trash "$TMP"
 
 # 5. Idempotency: run again, expect SKIP
 HOME="$TMP" ./scripts/install.sh --apply --platform claude-code
+```
+
+**PowerShell (`install.ps1`):**
+
+```powershell
+# 1. Static guard test (the script should refuse if a destructive pattern is planted)
+$tmp = Join-Path $env:TEMP "lb-test-$pid"
+New-Item -ItemType Directory -Path $tmp | Out-Null
+Copy-Item scripts/install.ps1 "$tmp\install.ps1"
+Add-Content "$tmp\install.ps1" "`nRemove-Item -Path foo"
+& "$tmp\install.ps1" -Help
+# Expected: exit code 78, "REFUSE" in stderr
+Remove-Item -Recurse -Force $tmp
+# ^ the test cleanup itself uses Remove-Item, that's fine — it's the user's choice
+
+# 2. Help text
+.\scripts\install.ps1 -Help
+
+# 3. Dry-run
+.\scripts\install.ps1
+
+# 4. Apply against a fake HOME
+$fakeHome = Join-Path $env:TEMP "lb-fake-$pid"
+New-Item -ItemType Directory -Path (Join-Path $fakeHome ".claude/skills") -Force | Out-Null
+$env:HOME = $fakeHome
+.\scripts\install.ps1 -Apply -Platform claude-code
+Get-ChildItem "$fakeHome\.claude\skills\letmbootstrap\SKILL.md"
 ```
 
 ## What this README is not

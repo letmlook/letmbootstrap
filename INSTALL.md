@@ -29,6 +29,8 @@
 
 安装器 **默认是 dry-run** —— 它会打印要做什么然后退出，不写任何东西。要实际安装，加 `--apply`。
 
+### Linux / macOS（bash）
+
 ```bash
 # 在 letmbootstrap 仓库目录下
 cd /Users/letmlook/code/letmbootstrap
@@ -51,13 +53,41 @@ cd /Users/letmlook/code/letmbootstrap
 ./scripts/install.sh --apply --symlink
 ```
 
+### Windows（PowerShell）
+
+```powershell
+# 在 letmbootstrap 仓库目录下
+cd C:\path\to\letmbootstrap
+
+# 1. 看会装到哪里
+.\scripts\install.ps1
+
+# 2. 装到所有检测到的平台
+.\scripts\install.ps1 -Apply
+
+# 3. 只装一个平台
+.\scripts\install.ps1 -Apply -Platform claude-code
+.\scripts\install.ps1 -Apply -Platform mavis
+.\scripts\install.ps1 -Apply -Platform codex
+
+# 4. 装到指定 Agent（仅 Mavis）
+.\scripts\install.ps1 -Apply -Platform mavis -AgentName my-dev-agent
+
+# 5. 用软链而不是复制（仓库改动自动生效）
+.\scripts\install.ps1 -Apply -Symlink
+```
+
+> Windows PowerShell 5.1 或 PowerShell Core 7+ 都可以跑。Windows 10 1809+ 自带 `pwsh`；更老版本要先装 PowerShell Core。
+
+## 共同保证（两个脚本都遵守）
+
 安装器：
 
 - ✅ 自动检测你机器上有哪些平台
 - ✅ 把 `skills/letmbootstrap/` 复制到正确位置
 - ✅ 跳过已存在的安装（不覆盖、不删除）
 - ✅ 报告被跳过的位置以便排查
-- ❌ 永远不跑 `rm`、`unlink` 或任何破坏性命令
+- ❌ 永远不跑 `rm`、`unlink`、`Remove-Item`、`Move-Item` 或任何破坏性命令
 - ❌ 永远不覆盖已存在的技能
 
 ## 手动安装（不跑脚本）

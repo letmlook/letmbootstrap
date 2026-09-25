@@ -11,6 +11,10 @@ The skill's `SKILL.md` frontmatter is part of the API contract. Any change to it
 
 ### Added
 
+- **Full Chinese localization** — every top-level doc, docs/ subdoc, template, script doc, example, and skill body is now Chinese-default.
+- English versions preserved as `.en.md` mirrors in the same directory.
+- **Windows installer** — `scripts/install.ps1` (PowerShell implementation), fully equivalent to `scripts/install.sh`. Covers Mavis / Claude Code / Codex CLI / Cursor / Gemini CLI / Aider / Devin / OpenCode. Windows users run `.ps1`; everyone else runs `.sh`.
+- **Two-script installer** — both versions share the same non-destructive guarantees; each script has its own static guard (`.sh` uses grep to check POSIX destructive commands; `.ps1` assembles cmdlet names at runtime to avoid self-detection).
 - `ARCHITECTURE.md` — five-layer architecture overview
 - `CONTRIBUTING.md` — PR workflow + decision record conventions
 - `SECURITY.md` — security reporting policy
@@ -24,7 +28,7 @@ The skill's `SKILL.md` frontmatter is part of the API contract. Any change to it
 
 ### Changed
 
-- `AGENTS.md` — "Where new things go" expanded; "Forbidden" lists destructive ops
+- `AGENTS.md` — "Where new things go" expanded; "Forbidden" lists destructive ops; both installers cited
 - `README.md` — indexes all new docs
 - `docs/decisions/0001-keep-skill-non-destructive.md` — referenced from more places
 
@@ -44,22 +48,23 @@ The skill's `SKILL.md` frontmatter is part of the API contract. Any change to it
 - `templates/single-task-contract.md` — task contract template
 - `skills/letmbootstrap/SKILL.md` — the bootstrap skill (hard rules section at top)
 - `scripts/install.sh` — non-destructive installer (static guard + dry-run default)
+- `scripts/install.ps1` — PowerShell equivalent, native Windows
 - `examples/letmbootstrap-self/` — dogfood example of skill output
 - `.gitignore` — macOS + editor + temp exclusions
 
 ### Design commitments (binding across versions)
 
 - **Non-destructive by default.** No `rm`, `unlink`, `mv`, `rmdir`, no `--force`, no `--reset`, no uninstall subcommand. See decision 0001.
-- **Idempotent installer.** Re-running `scripts/install.sh` is always safe.
+- **Idempotent installer.** Re-running either installer is always safe.
 - **Skip-on-conflict.** If the install target already exists, the installer prints SKIP and moves on.
-- **Static guard.** `scripts/install.sh` aborts with exit code 78 if a non-comment line grows a destructive pattern.
+- **Static guard.** Both `scripts/install.sh` and `scripts/install.ps1` abort with exit code 78 if a non-comment line grows a destructive pattern.
 
 ## Versioning policy
 
 | Change | Version bump |
 |---|---|
 | Skill `SKILL.md` frontmatter or body changes external behavior | minor (0.x.0) |
-| Add a new platform detector to `scripts/install.sh` | minor |
+| Add a new platform detector to either installer | minor |
 | Add a new template | minor |
 | Add a new decision record | patch |
 | Clarify / correct existing docs | patch |
