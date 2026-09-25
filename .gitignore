@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+
+# OS temp / scratch
+*.tmp
+*.bak
+*~
+.Trash-*
+
+# Local-only staging (if anyone ever adds it)
+_install_staging/
+
+# Never commit tokens, even accidentally
+*.pem
+*.key
+.env
+.env.*
+!.env.example
