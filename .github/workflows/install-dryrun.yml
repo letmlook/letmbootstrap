@@ -1,0 +1,156 @@
+name: install.sh dry-run + static guard
+
+# Verifies on every push and PR that:
+#   1. scripts/install.sh has shell-syntax valid code
+#   2. The static guard at the top of the script still catches destructive ops
+#   3. The installer dry-run runs cleanly
+#   4. The skill SKILL.md has valid YAML frontmatter
+#   5. The methodology word count stays under 1500 words
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify non-destructive guarantees + dry-run
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup bash
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: install.sh syntax check
+        run: bash -n scripts/install.sh && echo "✓ syntax OK"
+
+      - name: install.sh static guard check
+        run: |
+          set -e
+          if bash scripts/install.sh --help >/dev/null; then
+            echo "✓ help text renders"
+          else
+            echo "✗ help failed"
+            exit 1
+          fi
+
+      - name: install.sh dry-run (no flags)
+        run: |
+          # On a clean Ubuntu runner, no platforms are detected.
+          # We only check that the script exits 0 and prints the expected shape.
+          ./scripts/install.sh 2>&1 | tee /tmp/dryrun.out
+          if ! grep -q "Summary" /tmp/dryrun.out; then
+            echo "✗ dry-run missing 'Summary' section"
+            exit 1
+          fi
+          if ! grep -q "This was a DRY-RUN" /tmp/dryrun.out; then
+            echo "✗ dry-run didn't declare itself a dry-run"
+            exit 1
+          fi
+          echo "✓ dry-run OK"
+
+      - name: install.sh fake HOME dry-run
+        run: |
+          # Simulate having ~/.claude and ~/.minimax to verify detector coverage.
+          FAKE_HOME=$(mktemp -d)
+          mkdir -p "$FAKE_HOME/.claude" "$FAKE_HOME/.minimax" "$FAKE_HOME/.codex" "$FAKE_HOME/.gemini" "$FAKE_HOME/.config/opencode"
+          HOME="$FAKE_HOME" ./scripts/install.sh 2>&1 | tee /tmp/dryrun2.out
+          if ! grep -q "claude-code" /tmp/dryrun2.out; then
+            echo "✗ detector missing for claude-code"
+            exit 1
+          fi
+          if ! grep -q "mavis" /tmp/dryrun2.out; then
+            echo "✗ detector missing for mavis"
+            exit 1
+          fi
+          if ! grep -q "codex" /tmp/dryrun2.out; then
+            echo "✗ detector missing for codex"
+            exit 1
+          fi
+          if ! grep -q "gemini-cli" /tmp/dryrun2.out; then
+            echo "✗ detector missing for gemini-cli"
+            exit 1
+          fi
+          if ! grep -q "opencode" /tmp/dryrun2.out; then
+            echo "✗ detector missing for opencode"
+            exit 1
+          fi
+          echo "✓ all expected detectors fired"
+          mavis-trash '$FAKE_HOME'
+
+      - name: SKILL.md frontmatter sanity
+        run: |
+          set -e
+          head -5 skills/letmbootstrap/SKILL.md
+          # First non-empty line should be ---
+          line1=$(head -1 skills/letmbootstrap/SKILL.md)
+          if [ "$line1" != "---" ]; then
+            echo "✗ SKILL.md doesn't start with YAML frontmatter"
+            exit 1
+          fi
+          # Should contain name: and description:
+          if ! grep -q "^name:" skills/letmbootstrap/SKILL.md; then
+            echo "✗ SKILL.md missing name: in frontmatter"
+            exit 1
+          fi
+          if ! grep -q "^description:" skills/letmbootstrap/SKILL.md; then
+            echo "✗ SKILL.md missing description: in frontmatter"
+            exit 1
+          fi
+          echo "✓ SKILL.md frontmatter OK"
+
+      - name: methodology word count (≤ 1500 per AGENTS.md)
+        run: |
+          set -e
+          words=$(wc -w < docs/methodology.md)
+          echo "methodology.md is $words words"
+          if [ "$words" -gt 1500 ]; then
+            echo "✗ methodology.md exceeds 1500 words (currently $words)"
+            echo "  Push detail into separate docs."
+            exit 1
+          fi
+          echo "✓ methodology.md within word limit"
+
+      - name: static guard still catches destructive patterns
+        run: |
+          set -e
+          # Make a copy of install.sh, inject a fake destructive line, run it, expect refusal.
+          TMP=$(mktemp -d)
+          cp scripts/install.sh "$TMP/install.sh"
+          printf '\necho planted\nrm -rf /tmp/fake-target\n' >> "$TMP/install.sh"
+          chmod +x "$TMP/install.sh"
+          set +e
+          "$TMP/install.sh" --help 2>/tmp/refuse.out
+          rc=$?
+          set -e
+          if [ "$rc" -ne 78 ]; then
+            echo "✗ static guard did not refuse (exit code: $rc, expected 78)"
+            cat /tmp/refuse.out
+            exit 1
+          fi
+          if ! grep -q "REFUSE" /tmp/refuse.out; then
+            echo "✗ static guard did not print REFUSE"
+            exit 1
+          fi
+          echo "✓ static guard refuses destructive patterns (exit 78)"
+          mavis-trash '$TMP'
+
+      - name: forbidden destructive patterns in any script
+        run: |
+          # Belt-and-suspenders: scan all of scripts/ for rm/unlink/mv/rmdir in non-comment lines.
+          bad=$(grep -rnE '^[^#]*\b(rm |unlink |mv |rmdir )\b' scripts/ || true)
+          if [ -n "$bad" ]; then
+            echo "✗ found forbidden destructive patterns in scripts/:"
+            echo "$bad"
+            exit 1
+          fi
+          echo "✓ no forbidden destructive patterns in scripts/"

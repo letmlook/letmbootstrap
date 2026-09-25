@@ -10,24 +10,61 @@ A reusable collaboration methodology for solo + Agent iterative development. Des
 letmbootstrap/
 ├── README.md                          # this file
 ├── INSTALL.md                         # 5-minute install into your Agent platform
-├── AGENTS.md                          # dogfooded example of the constitution
+├── FAQ.md                             # common questions (mirrored at docs/faq.md)
+├── GLOSSARY.md                        # terminology (mirrored at docs/glossary.md)
+├── AGENTS.md                          # dogfooded project constitution
+├── ARCHITECTURE.md                    # five-layer architecture overview
+├── CONTRIBUTING.md                    # how to send a PR
+├── CHANGELOG.md                       # release notes
+├── LICENSE                            # MIT
+├── CODE_OF_CONDUCT.md                 # community norms
+├── SECURITY.md                        # how to report a security issue
+│
 ├── docs/
-│   ├── methodology.md                 # full methodology narrative
+│   ├── methodology.md                 # the 4-piece anti-drift narrative
 │   ├── installation-guide.md          # per-platform install steps + troubleshooting
 │   ├── agent-compatibility.md         # which Agents can run the skill
+│   ├── skills-catalog.md              # what skills ship + how to write more
+│   ├── faq.md                         # common questions
+│   ├── glossary.md                    # terms used in this repo
 │   └── decisions/                     # decision log (dogfooded)
-├── templates/
-│   ├── AGENTS.md.template             # copy → project root as AGENTS.md
-│   ├── decision.md.template           # copy → docs/decisions/NNNN-*.md
-│   └── single-task-contract.md        # copy/fill before each Agent task
-├── skills/
+│
+├── templates/                         # files the skill copies into target projects
+│   ├── README.md
+│   ├── AGENTS.md.template             # project constitution
+│   ├── decision.md.template           # decision record
+│   └── single-task-contract.md        # task contract
+│
+├── skills/                            # the installable Agent skills
 │   └── letmbootstrap/
-│       └── SKILL.md                   # the Agent skill: install this methodology into a target project
-├── scripts/
-│   └── install.sh                     # non-destructive installer for putting the skill on your Agent
-└── examples/
-    └── letmbootstrap-self/            # dogfooded example: the repo uses its own skill
+│       └── SKILL.md                   # the bootstrap skill
+│
+├── scripts/                           # host-side automation
+│   ├── README.md
+│   └── install.sh                     # non-destructive installer
+│
+├── examples/                          # worked examples of skill output
+│   ├── README.md
+│   └── letmbootstrap-self/            # dogfooded example
+│
+└── .github/
+    └── workflows/
+        └── install-dryrun.yml         # CI: install.sh dry-run on every push
 ```
+
+## Where to start
+
+| If you want to… | Read |
+|---|---|
+| Install the skill onto your Agent | [`INSTALL.md`](INSTALL.md) |
+| Understand the methodology | [`docs/methodology.md`](docs/methodology.md) |
+| See per-platform install details | [`docs/installation-guide.md`](docs/installation-guide.md) |
+| Check if your Agent is supported | [`docs/agent-compatibility.md`](docs/agent-compatibility.md) |
+| See the repo's own architecture | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| Send a PR | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| Look up a term | [`GLOSSARY.md`](GLOSSARY.md) |
+| Find a quick answer | [`FAQ.md`](FAQ.md) |
+| Browse the release notes | [`CHANGELOG.md`](CHANGELOG.md) |
 
 ## The 4-piece set (anti-drift minimum)
 
