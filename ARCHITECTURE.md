@@ -43,11 +43,8 @@ letmbootstrap/
 │   ├── README.md                      # index of the scripts
 │   └── install.sh                     # non-destructive installer
 │
-├── examples/                          # worked examples of skill output
-│   └── letmbootstrap-self/            # the dogfood example
-│
-└── .github/
-    └── workflows/                     # CI for the repo itself
+└── examples/                          # worked examples of skill output
+    └── letmbootstrap-self/            # the dogfood example
 ```
 
 ## Five-layer architecture
@@ -76,7 +73,7 @@ The non-destructive guarantee from [`docs/decisions/0001-keep-skill-non-destruct
 | 4. Skill | "Hard rules — non-destructive by default" section at the top |
 | 5. Installer | Static guard at the top of `scripts/install.sh` aborts on any `rm`/`unlink`/`mv`/`rmdir` pattern |
 
-Any new layer that doesn't preserve the guarantee is a regression. The CI workflow in `.github/workflows/` runs the installer in dry-run mode on every push to catch regressions.
+Any new layer that doesn't preserve the guarantee is a regression. Manual verification (dry-run before merge) is the discipline that keeps the guarantee alive — see `scripts/README.md` for the verification checklist.
 
 ## Why this shape and not another
 

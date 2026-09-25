@@ -85,8 +85,6 @@ mavis-trash "$TMP"
 HOME="$TMP" ./scripts/install.sh --apply --platform claude-code
 ```
 
-CI also runs the dry-run on every push. See `.github/workflows/install-dryrun.yml`.
-
 ## What this README is not
 
 - **Not the AGENTS.md.** Project constitution is [`../AGENTS.md`](../AGENTS.md).

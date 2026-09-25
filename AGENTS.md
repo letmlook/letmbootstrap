@@ -8,7 +8,7 @@ A reusable collaboration methodology template for solo + Agent iterative develop
 
 ## Stack
 
-Markdown / shell / Agent SKILL.md / GitHub Actions. No runtime. No build.
+Markdown / shell / Agent SKILL.md. No runtime. No build.
 
 ## Project is NOT
 
@@ -44,7 +44,6 @@ Markdown / shell / Agent SKILL.md / GitHub Actions. No runtime. No build.
 | Add a per-platform install path | edit `scripts/install.sh` detector + add row to `docs/agent-compatibility.md` |
 | Add an FAQ entry | `FAQ.md` + mirror to `docs/faq.md` |
 | Add a glossary entry | `GLOSSARY.md` + mirror to `docs/glossary.md` |
-| Add CI check | `.github/workflows/<name>.yml` |
 | Tweak the constitution | this file (≤ 80 lines) |
 
 ## Definition of Done (per change)
@@ -57,7 +56,6 @@ Markdown / shell / Agent SKILL.md / GitHub Actions. No runtime. No build.
 - [ ] `./scripts/install.sh --help` still works
 - [ ] `./scripts/install.sh` (dry-run, no flags) reports no errors
 - [ ] No new destructive ops in `scripts/` (no `rm`, `unlink`, `mv`, `rmdir` in non-comment lines)
-- [ ] CI workflow still passes (`.github/workflows/install-dryrun.yml`)
 - [ ] If `FAQ.md` or `GLOSSARY.md` changed, mirror to `docs/faq.md` / `docs/glossary.md`
 
 ## Forbidden

@@ -18,7 +18,7 @@ By participating, you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Enforc
 
 | Type | Bar |
 |---|---|
-| **Bug fix** (typo, broken link, misformatted table) | Trivial PR — no contract needed. CI must pass. |
+| **Bug fix** (typo, broken link, misformatted table) | Trivial PR — no contract needed. Manual dry-run must still pass. |
 | **Documentation clarification** | Send a PR with a before/after explanation in the description. |
 | **New platform support in `scripts/install.sh`** | PR must add a detection function, update [`docs/agent-compatibility.md`](docs/agent-compatibility.md), and pass the dry-run test on the platform you can verify. |
 | **New template** | Must come with a worked example in `examples/`. See the AGENTS.md "Definition of Done". |
@@ -44,7 +44,7 @@ The PR description is the single-task contract. Use the template:
 ## Acceptance criteria
 - [ ] <observable>
 - [ ] <observable>
-- [ ] CI is green
+- [ ] `./scripts/install.sh` dry-run passes
 
 ## Decision record
 <linked docs/decisions/NNNN-*.md, if this PR contradicts an existing decision>
@@ -66,8 +66,6 @@ head -5 skills/letmbootstrap/SKILL.md  # should have name: + description:
 
 # 3. Installer static guard (catches rm/unlink/mv/rmdir regressions)
 bash -n scripts/install.sh && echo OK
-
-# 4. CI on GitHub will also run the dry-run on push
 ```
 
 If you added a new platform, also test `--apply --platform <your-platform>` against a temp HOME directory:
@@ -115,7 +113,7 @@ Once the decision record exists, link it from your PR description.
 ## Review process
 
 1. **Maintainer reviews within 7 days.** If you don't hear back, ping.
-2. **CI must pass.** The dry-run on every detected platform must succeed.
+2. **Manual dry-run passes.** `./scripts/install.sh` (dry-run) must succeed on every detected platform before merge.
 3. **Two approvals for non-trivial changes.** Documentation-only changes need one approval.
 4. **Squash-merge to `main`.** Commit history of the merged commit should match the PR title.
 

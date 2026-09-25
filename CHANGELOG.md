@@ -22,7 +22,6 @@ The skill's `SKILL.md` frontmatter is part of the API contract. Any change to it
 - `templates/README.md` — guide to the templates
 - `scripts/README.md` — guide to the scripts
 - `examples/README.md` — guide to the examples
-- `.github/workflows/install-dryrun.yml` — CI: install.sh dry-run on every push
 
 ### Changed
 

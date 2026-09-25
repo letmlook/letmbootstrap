@@ -43,13 +43,9 @@ letmbootstrap/
 │   ├── README.md
 │   └── install.sh                     # non-destructive installer
 │
-├── examples/                          # worked examples of skill output
-│   ├── README.md
-│   └── letmbootstrap-self/            # dogfooded example
-│
-└── .github/
-    └── workflows/
-        └── install-dryrun.yml         # CI: install.sh dry-run on every push
+└── examples/                          # worked examples of skill output
+    ├── README.md
+    └── letmbootstrap-self/            # dogfooded example
 ```
 
 ## Where to start
