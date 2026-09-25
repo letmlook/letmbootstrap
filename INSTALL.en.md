@@ -256,3 +256,7 @@ Or, for development, install once with `--symlink` (bash) or `-Symlink` (PowerSh
 ## Next step
 
 After the skill is installed, you use it by saying one of the trigger phrases inside a project directory. The skill will guide the rest. See [`docs/methodology.md`](docs/methodology.md) for the full narrative.
+
+## Ask your Agent to install
+
+All the commands above are for **you** to run. If you'd rather talk than type, see [`docs/agent-driven-install.md`](docs/agent-driven-install.md) — covers handing the whole install flow to your Agent ("install letmbootstrap globally" etc.), plus paste-on-invoke, multi-platform, update, symlink-for-dev, and uninstall patterns.

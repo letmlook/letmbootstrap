@@ -15,6 +15,7 @@ The skill's `SKILL.md` frontmatter is part of the API contract. Any change to it
 - English versions preserved as `.en.md` mirrors in the same directory.
 - **Windows installer** — `scripts/install.ps1` (PowerShell implementation), fully equivalent to `scripts/install.sh`. Covers Mavis / Claude Code / Codex CLI / Cursor / Gemini CLI / Aider / Devin / OpenCode. Windows users run `.ps1`; everyone else runs `.sh`.
 - **Two-script installer** — both versions share the same non-destructive guarantees; each script has its own static guard (`.sh` uses grep to check POSIX destructive commands; `.ps1` assembles cmdlet names at runtime to avoid self-detection).
+- **`docs/agent-driven-install.md`** — new doc covering "ask your Agent to install" patterns: just say "install globally", paste-on-invoke (for shell-less Agents), multi-platform, update, symlink-for-dev, uninstall. Each intent gets a Chinese + English template phrase; the Agent reads the install guide and runs the right command. The skill itself stays strictly non-destructive — user-authorized one-off `rm -rf` operations are the Agent acting on explicit user instruction via generic shell, not a skill feature.
 - `ARCHITECTURE.md` — five-layer architecture overview
 - `CONTRIBUTING.md` — PR workflow + decision record conventions
 - `SECURITY.md` — security reporting policy

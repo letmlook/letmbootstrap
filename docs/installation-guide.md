@@ -208,6 +208,15 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.config/ope
 | `devin` | `./.devin/` 目录存在（只能按项目） |
 | `opencode` | `$HOME/.config/opencode/` 或 `./.opencode/` 目录存在 |
 
+## 让你的 Agent 来装
+
+如果你不想自己敲命令，直接告诉你的 Agent（它会读 [`INSTALL.md`](../INSTALL.md) 跑安装器）：
+
+> 全局安装 letmbootstrap
+> install letmbootstrap globally
+
+Agent 通常有 `Bash` 工具，会自己跑 `./scripts/install.sh --apply`。完整对话模板、paste-on-invoke（无 shell Agent）、更新、软链开发模式、卸载见 [`docs/agent-driven-install.md`](agent-driven-install.md)。
+
 ## 冲突策略
 
 如果目标路径已存在：

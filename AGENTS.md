@@ -28,11 +28,12 @@ Markdown / shell / Agent SKILL.md。无运行时。无构建。
 5. `docs/installation-guide.md` — 各平台详细安装步骤 + 故障排查
 6. `docs/agent-compatibility.md` — 哪些 Agent 能跑这个技能
 7. `docs/skills-catalog.md` — 已发布的技能 + 如何添加更多
-8. `FAQ.md` / `GLOSSARY.md` — 速查
-9. `templates/` — 三个可复制模板（见 `templates/README.md`）
-10. `skills/letmbootstrap/SKILL.md` — 引导技能
-11. `scripts/install.sh` — 非破坏性安装器，Linux/macOS（读静态守卫）
-12. `scripts/install.ps1` — PowerShell 等价版本，Windows/跨平台（同样有静态守卫）
+8. `docs/agent-driven-install.md` — 让你的 Agent 帮你装技能（不是自己敲 shell）
+9. `FAQ.md` / `GLOSSARY.md` — 速查
+10. `templates/` — 三个可复制模板（见 `templates/README.md`）
+11. `skills/letmbootstrap/SKILL.md` — 引导技能
+12. `scripts/install.sh` — 非破坏性安装器，Linux/macOS（读静态守卫）
+13. `scripts/install.ps1` — PowerShell 等价版本，Windows/跨平台（同样有静态守卫）
 
 ## Where new things go（新东西放哪）
 

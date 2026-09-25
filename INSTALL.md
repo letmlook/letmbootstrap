@@ -240,3 +240,7 @@ cp -R skills/letmbootstrap "$HOME/.claude/skills/letmbootstrap"
 ## 下一步
 
 技能装好后，在项目目录里说一句触发短语即可。技能会引导剩下的步骤。完整叙事见 [`docs/methodology.md`](docs/methodology.md)。
+
+## 让你的 Agent 来装
+
+上面的所有命令都是 **你** 跑。如果你更喜欢"动口不动手"，看 [`docs/agent-driven-install.md`](docs/agent-driven-install.md) —— 教你把整个安装流程交给 Agent 跑（直接对 Agent 说"全局安装 letmbootstrap"等），还覆盖 paste-on-invoke、多平台、更新、软链开发模式、卸载。

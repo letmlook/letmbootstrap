@@ -206,6 +206,15 @@ The script detects installed platforms by looking for these markers:
 | `devin` | `./.devin/` directory exists (per-project only) |
 | `opencode` | `$HOME/.config/opencode/` or `./.opencode/` directory exists |
 
+## Ask your Agent to install
+
+If you'd rather not run the commands yourself, tell your Agent (it will read [`INSTALL.md`](../INSTALL.md) and run the installer):
+
+> Install letmbootstrap globally.
+> 全局安装 letmbootstrap
+
+Most Agents have a `Bash` tool and will run `./scripts/install.sh --apply` themselves. Full conversational templates, paste-on-invoke (for agents without shell), update, symlink-for-dev, and uninstall patterns are in [`docs/agent-driven-install.md`](agent-driven-install.md).
+
 ## Conflict policy
 
 If the target path already exists:

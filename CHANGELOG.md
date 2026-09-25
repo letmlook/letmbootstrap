@@ -17,6 +17,7 @@
 - 英文版本以 `.en.md` 镜像形式保留在同目录，与中文版同步。
 - **Windows 安装器** — `scripts/install.ps1`（PowerShell 实现），与 `scripts/install.sh` 完全等价。覆盖 Mavis / Claude Code / Codex CLI / Cursor / Gemini CLI / Aider / Devin / OpenCode。Windows 用户跑 `.ps1`，其他平台跑 `.sh`。
 - **安装器双脚本** — 两个版本共享同一非破坏性保证；每个脚本顶部都有自己的静态守卫（`.sh` 用 grep 检查 POSIX 破坏性命令；`.ps1` 用运行时拼接 cmdlet 名避免自检测）。
+- **`docs/agent-driven-install.md`** — 新文档讲"让 Agent 帮你装技能"的对话式安装模式：直接说"全局安装"、paste-on-invoke（无 shell Agent）、多平台、更新、软链开发模式、卸载。每种意图给一句中英模板，Agent 收到后会自己读安装指南跑对应命令。技能本身仍然严格非破坏性 —— 用户授权的一次性 `rm -rf` 是 Agent 在用户的明确指令下用通用 shell 命令做的，不是技能的功能。
 
 ### 变更
 

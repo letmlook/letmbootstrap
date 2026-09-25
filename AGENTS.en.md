@@ -26,11 +26,12 @@ Markdown / shell / Agent SKILL.md. No runtime. No build.
 5. `docs/installation-guide.md` — per-platform install steps + troubleshooting
 6. `docs/agent-compatibility.md` — which Agents can run the skill
 7. `docs/skills-catalog.md` — catalog of shipped skills + how to write more
-8. `FAQ.md` / `GLOSSARY.md` — quick reference
-9. `templates/` — the three templates to copy (see `templates/README.md`)
-10. `skills/letmbootstrap/SKILL.md` — the bootstrap skill
-11. `scripts/install.sh` — non-destructive installer for Linux/macOS (read the static guard)
-12. `scripts/install.ps1` — PowerShell equivalent for Windows / cross-platform (same static guard)
+8. `docs/agent-driven-install.md` — ask your Agent to install the skill (not type shell yourself)
+9. `FAQ.md` / `GLOSSARY.md` — quick reference
+10. `templates/` — the three templates to copy (see `templates/README.md`)
+11. `skills/letmbootstrap/SKILL.md` — the bootstrap skill
+12. `scripts/install.sh` — non-destructive installer for Linux/macOS (read the static guard)
+13. `scripts/install.ps1` — PowerShell equivalent for Windows / cross-platform (same static guard)
 
 ## Where new things go
 

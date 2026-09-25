@@ -55,6 +55,7 @@ letmbootstrap/
 | Install the skill onto your Agent | [`INSTALL.md`](INSTALL.md) |
 | Understand the methodology | [`docs/methodology.md`](docs/methodology.md) |
 | See per-platform install details | [`docs/installation-guide.md`](docs/installation-guide.md) |
+| Have your Agent install it (no shell typing) | [`docs/agent-driven-install.md`](docs/agent-driven-install.md) |
 | Check if your Agent is supported | [`docs/agent-compatibility.md`](docs/agent-compatibility.md) |
 | See the repo's own architecture | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Send a PR | [`CONTRIBUTING.md`](CONTRIBUTING.md) |

@@ -56,6 +56,7 @@ letmbootstrap/
 | 把技能装到你的 Agent | [`INSTALL.md`](INSTALL.md) |
 | 理解方法论 | [`docs/methodology.md`](docs/methodology.md) |
 | 看各平台的详细安装步骤 | [`docs/installation-guide.md`](docs/installation-guide.md) |
+| 让 Agent 帮你装（不用自己敲 shell） | [`docs/agent-driven-install.md`](docs/agent-driven-install.md) |
 | 查你的 Agent 是否支持 | [`docs/agent-compatibility.md`](docs/agent-compatibility.md) |
 | 看仓库自身的架构 | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | 提 PR | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
