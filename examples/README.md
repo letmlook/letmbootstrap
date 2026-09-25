@@ -1,45 +1,47 @@
+<!-- 语言：中文（默认） | English mirror: examples/README.en.md -->
+
 # examples/
 
-Worked examples of what the `letmbootstrap` skill produces. Each example shows the **target project's** output after running the skill — i.e., the files the skill would write into another project.
+`letmbootstrap` 技能输出的真实示例。每个示例展示 **目标项目** 跑完技能后的样子 —— 即技能会写到另一个项目的那些文件。
 
-## What's here
+## 这里有什么
 
-| Example | What it demonstrates |
+| 示例 | 展示什么 |
 |---|---|
-| [`letmbootstrap-self/`](letmbootstrap-self/) | The dogfood example: the letmbootstrap repo itself, with every section filled in |
+| [`letmbootstrap-self/`](letmbootstrap-self/) | dogfood 示例：letmbootstrap 仓库自身，每个章节都填好 |
 
-## Why one example
+## 为什么只有一个
 
-The AGENTS.md says: *"Don't add templates for things not yet used by a real project."* The same rule applies to examples. One good example is enough to show the methodology; adding a second before a real user has reported using it would be premature.
+AGENTS.md 说："不为真实项目还没用到的东西加模板。" 同样的规则适用于示例。一个好示例足够展示方法论；在真实用户报告使用前加第二个是过早。
 
-When you adopt letmbootstrap in your own project, the output should look like the example — adjusted for your project's name, stack, and anti-goals. If it doesn't, the skill probably needs more metadata from you in Step 2 of the procedure.
+当你在自己的项目里采用 letmbootstrap 时，输出应该看起来像示例 —— 按你项目的名、技术栈、反目标调整。如果不像，技能大概率在第 2 步需要你提供更多元数据。
 
-## Reading order
+## 阅读顺序
 
-1. [`letmbootstrap-self/README.md`](letmbootstrap-self/README.md) — what this example is and isn't
-2. [`letmbootstrap-self/AGENTS.md`](letmbootstrap-self/AGENTS.md) — a populated project constitution (~50 lines)
-3. [`letmbootstrap-self/docs/decisions/0001-bootstrap-with-letmbootstrap.md`](letmbootstrap-self/docs/decisions/0001-bootstrap-with-letmbootstrap.md) — the bootstrap decision record
-4. [`letmbootstrap-self/skills/README.md`](letmbootstrap-self/skills/README.md) — a populated skills directory index
+1. [`letmbootstrap-self/README.md`](letmbootstrap-self/README.md) — 这个示例是什么、不是什么
+2. [`letmbootstrap-self/AGENTS.md`](letmbootstrap-self/AGENTS.md) — 填好的项目宪法（~50 行）
+3. [`letmbootstrap-self/docs/decisions/0001-bootstrap-with-letmbootstrap.md`](letmbootstrap-self/docs/decisions/0001-bootstrap-with-letmbootstrap.md) — 引导决策记录
+4. [`letmbootstrap-self/skills/README.md`](letmbootstrap-self/skills/README.md) — 填好的 skills 目录索引
 
-Each file has comments pointing at the canonical version in the repo root, so you can compare "what the example shows" with "what the real version looks like."
+每个文件都有注释指向仓库根下的规范版本，方便对比"示例展示"和"真实版本长什么样"。
 
-## How to add an example
+## 怎么加示例
 
-When you adopt letmbootstrap in a real project and want to show others what your output looked like:
+当你在真实项目里采用 letmbootstrap 想展示输出时：
 
-1. Copy the [`letmbootstrap-self/`](letmbootstrap-self/) directory to `examples/<your-project-name>/`.
-2. Update the README to describe what your project is.
-3. Update the AGENTS.md to your project's actual metadata.
-4. Replace the bootstrap decision record with one specific to your project's adoption story.
-5. **Sanitize before submitting.** Examples go into a public repo. Don't include secrets, internal URLs, or anything you wouldn't put on a public README.
+1. 把 [`letmbootstrap-self/`](letmbootstrap-self/) 目录拷到 `examples/<你的项目名>/`。
+2. 更新 README 描述你的项目是什么。
+3. 更新 AGENTS.md 为你项目的真实元数据。
+4. 把引导决策记录替换成针对你项目采纳故事的那一条。
+5. **提交前脱敏。** 示例进公开仓库。不要包含密钥、内部 URL、或任何你不会放公开 README 的东西。
 
-Submit a PR linking your example. The maintainers will check:
+提个 PR 链上你的示例。维护者会检查：
 
-- Does it follow the template structure (no missing sections, no added sections that the skill doesn't produce)?
-- Are the anti-goals real anti-goals (not aspirational)?
-- Is the decision record's "Alternatives considered" populated with real alternatives?
+- 是否遵循模板结构（不缺章节、不加技能不产生的章节）？
+- 反目标是真反目标（不是愿望清单）？
+- 决策记录的"考虑过的方案"用真实方案填好了？
 
-## What this README is not
+## 本 README 不是
 
-- **Not a tutorial.** The skill body is the tutorial; this directory shows output.
-- **Not exhaustive.** Each example shows one adoption. Different projects adopt differently.
+- **不是教程。** 技能正文是教程；本目录展示输出。
+- **不是穷尽。** 每个示例展示一种采纳。不同项目采纳方式不同。

@@ -1,55 +1,55 @@
-# Single-Task Contract — <Short title>
+# 单任务契约 — <短标题>
 
-> **Fill this in 30 seconds before each Agent task.** Cost: 30 seconds. Saves: ~30 minutes of re-orientation.
+> **每次给 Agent 派任务前花 30 秒填这个。** 成本：30 秒。节省：平均每次任务 ~30 分钟重新定向。
 
-## Task
+## Task（任务）
 
-<One sentence: verb + noun. Concrete, observable.>
+<一句话：动词 + 名词。具体、可观察。>
 
-> Example: "Add `--format json` option to the `list` CLI command."
+> 示例："给 `list` CLI 命令加 `--format json` 选项。"
 
-## Required reading
+## Required reading（必读）
 
-- `<doc or file path>` — <why>
-- `<existing similar implementation>` — <mimic this style>
+- `<文档或文件路径>` — <为什么>
+- `<已有的类似实现>` — <模仿这个风格>
 
-> 2-5 references is the sweet spot. Too few = Agent guesses. Too many = Agent drowns.
+> 2-5 个引用最合适。少了 Agent 瞎猜，多了 Agent 淹没。
 
-## Out of scope (do NOT do)
+## Out of scope (do NOT do)（不做）
 
-- <Boundary 1: e.g., "Don't change the YAML parser">
-- <Boundary 2: e.g., "Don't add a new dependency">
-- <Boundary 3: e.g., "Don't touch docs/decisions/ files">
+- <边界 1：例如，"不要改 YAML 解析器">
+- <边界 2：例如，"不要加新依赖">
+- <边界 3：例如，"不要动 docs/decisions/ 文件">
 
-> Explicit boundaries prevent the most common drift: "while I was at it..."
+> 明确边界防止最常见的跑偏："既然来了就……"
 
-## Acceptance criteria
+## Acceptance criteria（完成标准）
 
-- [ ] <Observable criterion 1: e.g., "`--format json` appears in `--help` output">
-- [ ] <Observable criterion 2: e.g., "Output is valid JSON parseable by `JSON.parse`">
-- [ ] Tests cover: <cases — empty input, single item, many items>
-- [ ] `pnpm typecheck && pnpm lint` passes
-- [ ] <Any project-specific gate>
+- [ ] <可观察标准 1：例如，"`--format json` 出现在 `--help` 输出">
+- [ ] <可观察标准 2：例如，"输出是 `JSON.parse` 可解析的合法 JSON">
+- [ ] 测试覆盖：<情况 —— 空输入、单条、很多条>
+- [ ] `pnpm typecheck && pnpm lint` 通过
+- [ ] <任何项目特有闸门>
 
-> Criteria must be **observable and verifiable**. Not "code looks clean" — that's subjective.
+> 标准必须 **可观察、可验证**。不是"代码看起来干净" —— 那是主观的。
 
-## Autonomous decision space
+## Autonomous decision space（自主决策空间）
 
-The Agent decides alone:
+Agent 单独决定：
 
-- <Implementation detail>
-- <Test fixture content>
-- <Error message wording (English)>
-- <Internal helper names>
+- <实现细节>
+- <测试 fixture 内容>
+- <错误信息措辞（英文）>
+- <内部辅助函数命名>
 
-## Must ask me before
+## Must ask me before（必须先问）
 
-- <Anything that changes the public API>
-- <Anything that affects the scope boundaries above>
-- <Adding a new dependency>
-- <Touching files outside the stated scope>
-- <Deleting or rewriting existing tests>
+- <任何改变公开 API 的事>
+- <任何影响上面 scope 边界的事>
+- <加新依赖>
+- <动范围外文件>
+- <删除或重写现有测试>
 
-## Notes (optional)
+## Notes（备注，可选）
 
-<Anything that doesn't fit the above: links to related issues, prior attempts, special considerations>
+<上面装不下的：相关 issue 链接、之前尝试、特殊考虑>

@@ -1,56 +1,58 @@
-# 0001 — Keep the letmbootstrap skill non-destructive (no rm, no uninstall)
+<!-- 语言：中文（默认） | English mirror: docs/decisions/0001-keep-skill-non-destructive.en.md -->
 
-## Status
+# 0001 — 保持 letmbootstrap 技能的非破坏性（无 rm、无卸载）
 
-2026-09-26 — implemented — skill body and installer enforce non-destructive operation as a hard rule.
+## 状态
 
-## Context
+2026-09-26 — 已实施 — 技能正文和安装器把非破坏性操作当作硬规则强制执行。
 
-The letmbootstrap skill is an installer: it copies `AGENTS.md` + `docs/decisions/` + `skills/` into a target project. The repo also ships an installer (`scripts/install.sh`) that copies the skill itself into an Agent's skills directory.
+## 背景
 
-Both are designed to be safe to run repeatedly, in any order, on partially-initialized or fully-initialized targets. The principle: **the skill never deletes or overwrites anything the user didn't explicitly approve**.
+letmbootstrap 技能是一个安装器：把 `AGENTS.md` + `docs/decisions/` + `skills/` 复制到目标项目。本仓库还发布一个安装器（`scripts/install.sh`），把技能本身复制到 Agent 的技能目录。
 
-The initial v1 of the skill and installer could have included an "uninstall" or "reset" path that wipes the previously installed files. We considered this for symmetry with most installers. We decided not to ship it in v1 for three reasons:
+两者都设计成可以反复安全跑、按任何顺序、在半初始化或完全初始化的目标上跑。原则：**技能从不删除或覆盖用户未明确批准的任何东西**。
 
-1. **The most expensive failure mode is accidental deletion.** A misfired uninstall script can wipe a project's `AGENTS.md`, decision log, and skills directory in one command. The blast radius is unbounded.
-2. **Recovery is easy without an uninstall command.** The user can `rm -rf` the installed directory themselves if they really want to. That single-line operation is no harder than calling an uninstall command — but it forces the user to be explicit about what they're removing.
-3. **The skill's value proposition is "don't drift, don't re-prompt, don't lose context."** Shipping a destructive command in the same tool that promises durability is a contradiction. The user should never have to wonder whether a re-run might delete state.
+技能和安装器的初始 v1 可以加一个"卸载"或"重置"路径，清除已装的文件。我们为对称性考虑过这么做。决定 v1 不发，原因有三：
 
-## Decision
+1. **最贵的失效模式是误删。** 误触发的卸载脚本一条命令就能抹掉项目的 `AGENTS.md`、决策日志、skills 目录。爆炸半径无界。
+2. **没有卸载命令也能轻松恢复。** 用户想要的话自己 `rm -rf` 已装的目录。这条单行操作不比调卸载命令更难 —— 但强迫用户明确自己在删什么。
+3. **技能的价值主张是"不跑偏、不重提示、不丢上下文"。** 在承诺持久性的同一工具里发破坏性命令是矛盾。用户永远不该怀疑重跑会不会删状态。
 
-The letmbootstrap skill and `scripts/install.sh` are **non-destructive by default**:
+## 决策
 
-1. The skill body refuses to `rm`, `unlink`, `mv`, or overwrite any existing file without per-file explicit consent from the user.
-2. `scripts/install.sh` defaults to dry-run. It never deletes. On conflict (target path already exists), it prints `SKIP` and continues.
-3. `scripts/install.sh` contains a static guard at the top of the file: if a non-comment line ever grows a destructive pattern (`rm`, `unlink`, `mv`, `rmdir`), the script aborts with exit code 78 before doing anything.
-4. There is no `uninstall` subcommand. There is no `--force` flag. There is no `--reset` flag. There is no way to override the skip-on-conflict behavior from inside the script.
-5. The skill body's "Hard rules — non-destructive by default" section is binding; the skill may not skip them even when the user explicitly asks for an operation that would delete state.
+letmbootstrap 技能和 `scripts/install.sh` **默认非破坏性**：
 
-## Consequences
+1. 技能正文拒绝 `rm`、`unlink`、`mv`，未经用户逐文件明确同意也不覆盖任何已存在的文件。
+2. `scripts/install.sh` 默认干跑。它从不删除。冲突时（目标路径已存在），打印 `SKIP` 继续。
+3. `scripts/install.sh` 顶部有静态守卫：一旦非注释行出现破坏性模式（`rm`、`unlink`、`mv`、`rmdir`），脚本以退出码 78 中止。
+4. 没有 `uninstall` 子命令。没有 `--force` 标志。没有 `--reset` 标志。无法从脚本内覆盖"冲突跳过"行为。
+5. 技能正文的"硬规则 — 默认非破坏性"一节是绑定的；即使用户明确要求会删除状态的操作，技能也不能跳过。
 
-- ✅ **Gain:** users can run the skill or installer any number of times without risk to their existing files. Re-runs are safe. The trust contract is clear: this tool never destroys what you've built.
-- ❌ **Cost:** if a user wants to start fresh, they must do the manual `rm -rf` themselves. This is a one-line, copy-pasteable operation that they can find in [`INSTALL.md`](../../INSTALL.md) and [`docs/installation-guide.md`](../installation-guide.md). The cost is "5 seconds of reading the docs."
-- ⚠️ **Workflow change:** updates to the skill require the user to manually replace the installed copy (`cp -R skills/letmbootstrap $INSTALL_PATH`). For active development, `--symlink` mode is supported so repo edits are picked up live.
-- ⚠️ **Workflow change:** if a future feature requires destructive ops (e.g., a project migration that genuinely needs to move files), it must be implemented as a **separate skill** with its own consent flow, not as a flag inside the installer.
+## 影响
 
-## Alternatives considered
+- ✅ **得到：** 用户可以无风险地跑技能或安装器任意次。重跑是安全的。信任契约清晰：这个工具绝不破坏你建的东西。
+- ❌ **付出：** 如果用户想重来，必须自己手动 `rm -rf`。这是一行可复制的操作，在 [`INSTALL.md`](../../INSTALL.md) 和 [`docs/installation-guide.md`](../installation-guide.md) 里都能找到。代价是"读 5 秒文档"。
+- ⚠️ **工作流变化：** 更新技能需要用户手动替换已装的副本（`cp -R skills/letmbootstrap $INSTALL_PATH`）。活跃开发时支持 `--symlink` 模式，仓库改动实时生效。
+- ⚠️ **工作流变化：** 如果未来功能真的需要破坏性操作（例如项目迁移真要移文件），必须实现成 **单独的技能** 带自己的同意流程，而不是装在安装器里的标志。
 
-- **Ship an `uninstall` subcommand with confirmations:** rejected. Confirmations are an unreliable defense. Users click through them. The probability of accidental deletion is non-zero and the cost is high. Better to make the operation explicit by requiring the user to type the destructive command themselves.
-- **Ship `--force` and `--reset` flags:** rejected for the same reason. Flags add power; power without explicit per-file consent is exactly what we want to avoid.
-- **Allow the skill to delete files when the user says "yes, delete X":** rejected for v1. The decision boundary we picked is "no destructive operations at all, period." If a future use case really requires it, we'll write a new decision record (probably `0002`) laying out the consent flow and ship it as a separate skill. Until then, this decision stands.
-- **Ship a separate `letmbootstrap-uninstall` skill:** rejected. Having two skills where one is "do" and the other is "undo" invites confusion. The single-skill model is simpler. If you want uninstall, do it manually — the docs explain how.
-- **Make the static guard a runtime check only:** rejected. A runtime check can be bypassed (e.g., `--no-verify`-style flag). A static guard at the top of the script is checked every time, regardless of how the script is invoked.
+## 考虑过的方案
 
-## Lifecycle
+- **发带确认的 `uninstall` 子命令：** 拒。确认是不可靠的防线。用户会一路点过去。误删概率非零、代价高。不如让用户自己打破坏性命令。
+- **发 `--force` 和 `--reset` 标志：** 同理拒。标志加能力；没有逐文件明确同意的能力正是我们要避免的。
+- **允许技能在用户说"是，删 X"时删文件：** v1 拒。我们选的决策边界是"任何破坏性操作都不行"。如果未来真有需求，写一条新决策（大概是 `0002`）说明同意流程再发。在那之前，这条决策生效。
+- **发单独的 `letmbootstrap-uninstall` 技能：** 拒。两个技能一个"做"一个"撤销"引起混淆。单技能模型更简单。想卸载就手动 —— 文档讲过怎么操作。
+- **只把静态守卫做成运行时检查：** 拒。运行时检查可被绕过（例如 `--no-verify` 风格的标志）。脚本顶部的静态守卫每次都查，不管脚本怎么被调。
 
-This file is in `docs/decisions/` (implemented). If the policy ever changes — for example, if we add a destructive operation behind explicit per-file consent — this file moves to `docs/decisions/rejected/` and a new decision record (e.g., `0002-allow-targeted-deletion-with-consent.md`) takes its place. Until then, no PR that introduces destructive operations to the skill or installer should be merged.
+## 生命周期
 
-## Audit checklist for contributors
+本文件在 `docs/decisions/`（已实施）。如果策略永远变化 —— 比如我们加一个带明确逐文件同意的破坏性操作 —— 本文件移到 `docs/decisions/rejected/`，新的决策记录（比如 `0002-allow-targeted-deletion-with-consent.md`）接替。在那之前，任何给技能或安装器引入破坏性操作的 PR 都不应合并。
 
-Before adding any operation to the skill body or `scripts/install.sh`, verify:
+## 贡献者审计清单
 
-- [ ] Does not contain `rm`, `unlink`, `mv`, `rmdir` in non-comment lines.
-- [ ] Does not overwrite an existing file without per-file explicit consent.
-- [ ] Is idempotent — re-running on a populated target is a no-op.
-- [ ] The static guard in `scripts/install.sh` still passes (`bash -n scripts/install.sh` and a manual review).
-- [ ] The "Hard rules" section in `skills/letmbootstrap/SKILL.md` is still consistent with the actual behavior.
+往技能正文或 `scripts/install.sh` 加任何操作前，验证：
+
+- [ ] 非注释行不含 `rm`、`unlink`、`mv`、`rmdir`。
+- [ ] 不未经逐文件明确同意覆盖已存在的文件。
+- [ ] 幂等 —— 在已填充目标上重跑是无操作。
+- [ ] `scripts/install.sh` 的静态守卫仍然通过（`bash -n scripts/install.sh` + 手动 review）。
+- [ ] `skills/letmbootstrap/SKILL.md` 的"硬规则"一节仍和实际行为一致。

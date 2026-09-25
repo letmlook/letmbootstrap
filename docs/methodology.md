@@ -1,163 +1,166 @@
-# The letmbootstrap Methodology
+<!-- 语言：中文（默认） | English mirror: docs/methodology.en.md -->
 
-A short, opinionated guide for solo developers iterating with an Agent. The goal: **make project knowledge persistent and machine-readable so the Agent doesn't re-derive context every session, and so it can't quietly violate the rules.**
+# letmbootstrap 方法论
 
-## Why this exists
+一份简短、有立场的指南，给单人 + Agent 迭代开发者。目标：**让项目知识持久化、可机读**，这样 Agent 不会每次会话都重新推导上下文，也不会悄悄违反规则。
 
-Default Agent behavior has three failure modes when iterating on a project:
+## 为什么存在这个方法论
 
-1. **Drift** — Agent doesn't know what's been decided, so it re-litigates settled choices.
-2. **Scope creep** — Agent "helpfully" extends beyond the task, touching unrelated code.
-3. **Forgotten rules** — Conventions live in chat history and evaporate between sessions.
+默认的 Agent 行为在迭代项目时有三种失效模式：
 
-Every piece of letmbootstrap targets one of these failures. The methodology is small on purpose — it's a set of leverage points, not a framework.
+1. **跑偏** — Agent 不知道已经决定过什么，所以重新争论已敲定的选择。
+2. **Scope 蔓延** — Agent"贴心地"超出任务范围，动了无关代码。
+3. **规则遗忘** — 约定只在聊天记录里，会话之间蒸发。
 
-## The 4 pieces
+letmbootstrap 的每块都对应一种失效。方法论故意小 —— 它是一组杠杆点，不是框架。
 
-### 1. `AGENTS.md` — the project constitution
+## 4 件套
 
-A 30-line file at the project root. Six sections, each one decision that prevents drift:
+### 1. `AGENTS.md` — 项目宪法
 
-- **Project is** — one sentence. Forces clarity on what this project does.
-- **Stack** — what runtime/language. Makes the Agent respect the language.
-- **Project is NOT** — anti-goals. The single most powerful section: lists what the Agent must NOT add.
-- **Required reading (in order)** — explicit doc order so the Agent doesn't read stale docs first.
-- **Where new code goes** — extension map. New CLI command goes here, new HTTP handler goes there. Prevents Agent from inventing new structure.
-- **Definition of Done** — checklist the Agent runs against its own work before claiming done.
-- **Forbidden** — non-negotiable no-fly zones (vendor/, --no-verify, drive-by refactors).
+项目根下的 30 行文件。6 个章节，每个都对应一种防跑偏的决策：
 
-**Cost to write:** 15 minutes the first time, 5 minutes to maintain.
-**ROI:** Eliminates ~70% of "you forgot rule X" re-prompting.
+- **Project is** — 一句话。强迫你想清楚项目做什么。
+- **Stack** — 运行时/语言。让 Agent 尊重所用语言。
+- **Project is NOT** — 反目标。最强大的章节：列出 Agent 不能加什么。
+- **Required reading (in order)** — 明确的阅读顺序，让 Agent 不先读陈旧文档。
+- **Where new code goes** — 扩展图。新 CLI 命令放这里，新 HTTP handler 放那里。防止 Agent 发明新结构。
+- **Definition of Done** — Agent 在声称做完前对自己跑的清单。
+- **Forbidden** — 不可谈判的禁飞区（vendor/、--no-verify、顺手 refactor）。
 
-### 2. `docs/decisions/` — the decision log
+**首次编写成本：** 第一次 15 分钟，维护 5 分钟。
+**回报：** 消除 ~70% 的"你忘了规则 X"重复提示。
 
-Append-only. One file per decision: `NNNN-short-title.md`. Four segments:
+### 2. `docs/decisions/` — 决策日志
 
-- **Context** — the problem or opportunity. Written to stand without the solution.
-- **Decision** — what was decided, present tense, factual.
-- **Consequences** — what's gained, what's lost, what's changed about how we work.
-- **Alternatives considered** — what was rejected and why. Mandatory.
+只能追加。每个决策一个文件：`NNNN-短标题.md`。4 个段落：
 
-The single most important rule: **alternatives must be real**. A decision record that says "we picked SQLite" without "we rejected Postgres because X" invites re-litigation every six months.
+- **背景** — 问题或机会。要写得脱离方案也能读懂。
+- **决策** — 决定的内容，现在时、事实性。
+- **影响** — 得到了什么、付出了什么、日常工作有什么变化。
+- **考虑过的方案** — 拒绝了哪些、为什么。**必填**。
 
-**The lifecycle:**
-- `proposed/` — proposal under review, not yet built.
-- `implemented/` — shipped. Code follows note; note follows code; they stay in sync.
-- `rejected/` — considered and declined, kept only while its rationale prevents a plausible mistake.
+最重要的规则：**方案必须是真的**。一条"我们选了 SQLite"但没写"拒绝了 Postgres 因为 X"的决策记录，每半年就会被重新争论一次。
 
-**Why this works for Agent collaboration:** Before starting any significant change, the Agent reads recent decisions. If the change contradicts one, the Agent either follows the decision or writes a new decision explicitly. Re-litigation becomes visible — it's a file write, not a paragraph in a PR comment.
+**生命周期：**
+- `proposed/` — 评审中，代码可能还没写。
+- `implemented/` — 已上线。代码跟着记录；记录跟着代码；保持同步。
+- `rejected/` — 考虑过但拒绝，只在理由能防止合理错误时保留。
 
-### 3. `skills/` — procedure over improvisation
+**为什么对 Agent 协作有效：** 在做任何大改动前，Agent 读最近决策。如果改动矛盾，要么跟着决策，要么写一条新决策。重新争论变成可见的 —— 是文件写入，不是 PR 评论里的一段。
 
-A `skills/` (or `.agent-skills/`) directory of `SKILL.md` files. Each one:
+### 3. `skills/` — 流程而非即兴发挥
 
-- Has frontmatter: `name:` + `description:` that says **when to invoke**.
-- Body is step-by-step procedure with verifiable success criteria.
-- Refuses to give subjective advice — only commands, checks, and decision rules.
+一个 `skills/`（或 `.agent-skills/`）目录，里面是 `SKILL.md` 文件。每个：
 
-The trigger description is the hardest part to write. A skill whose description says "useful for code review" will never be invoked. A skill whose description says "Use when reviewing a PR or before marking one ready" gets invoked at the right moment.
+- 有 frontmatter：`name:` + `description:` 说明 **什么时候调用**。
+- 正文是带可验证成功标准的逐步流程。
+- 拒绝给主观建议 —— 只有命令、检查、决策规则。
 
-Common skills to ship:
+触发描述是最难写的。一条描述写"对代码审查有用"的技能永远不会被调用。一条描述写"在审 PR 或标记前可用"的技能会在对的时机被调用。
 
-- `pre-push-checks` — narrow test selection before push
-- `code-review` — what to check in a PR
-- `debug-flaky-test` — isolation, quiescence, restoration
-- `release-checklist` — version bump, changelog, tags
+常见发布的技能：
 
-### 4. Single-task contract — 30 seconds before each task
+- `pre-push-checks` — push 前的窄测试选择
+- `code-review` — PR 里检查什么
+- `debug-flaky-test` — 隔离、静默、恢复
+- `release-checklist` — 版本号、changelog、tag
 
-Every time you hand the Agent a task, fill this in first (it goes in the chat or as a file):
+### 4. 单任务契约 — 每次任务前 30 秒
+
+每次给 Agent 派任务前，先填这个（放进对话里或作为文件）：
 
 ```
-## Task
-[verb + noun, one sentence]
+## 任务
+[动词 + 名词，一句话]
 
-## Required reading
-- doc / file references
+## 必读
+- 文档 / 文件引用
 
-## Out of scope (do NOT do)
-- boundaries
+## 不做（do NOT do）
+- 边界
 
-## Acceptance criteria
-- [ ] observable criterion
-- [ ] observable criterion
-- [ ] tests cover: cases
-- [ ] gates pass: typecheck / lint / test
+## 完成标准
+- [ ] 可观察的标准
+- [ ] 可观察的标准
+- [ ] 测试覆盖：情况
+- [ ] 闸门通过：typecheck / lint / test
 
-## Autonomous decision space
-- what the Agent decides alone
+## 自主决策空间
+- Agent 单独决定的事
 
-## Must ask me before
-- what the Agent must escalate
+## 必须先问
+- Agent 必须升级的事
 ```
 
-**This is the anti-drift nuclear weapon.** The contract does three things at once:
-- **Clarifies your own thinking** — by the time you've filled it in, you know exactly what you want.
-- **Prevents scope creep** — explicit "do NOT" list.
-- **Gives the Agent a stop signal** — acceptance criteria let it know when it's done, so it doesn't keep going or stop too early.
+**这是防跑偏的核武器。** 契约同时做三件事：
+- **澄清你自己的思路** — 你填完时已经确切知道自己想要什么。
+- **防止 scope 蔓延** — 明确的"不要做"清单。
+- **给 Agent 一个停止信号** — 完成标准让它知道什么时候做完，不会一直干或太早停。
 
-**Cost:** 30 seconds. **ROI:** Saves 30 minutes of re-orientation per task on average.
+**成本：** 30 秒。**回报：** 平均每次任务节省 30 分钟重新定向。
 
-## The 3 principles
+## 3 原则
 
-### Principle 1: Materialize decisions
+### 原则 1：物化决策
 
-Anything you decide that affects the project must exist as a file the Agent can read. Three rules:
+任何影响项目的决定必须以 Agent 能读的文件存在。3 条规则：
 
-- If you'll need to re-decide it later → write a decision note.
-- If you'll need to remember how to do it → write a skill.
-- If it's a one-off that won't recur → still write it in the commit message.
+- 以后还要重决策 → 写决策记录。
+- 以后还要记流程 → 写技能。
+- 一次性以后不再出现 → 仍然写在 commit 信息里。
 
-**Don't keep conventions in chat history. Don't keep conventions in your head. Write them where the Agent can read them.**
+**不要把约定放在聊天记录里。也不要放在脑子里。写到 Agent 能读的地方。**
 
-### Principle 2: Mechanize rules
+### 原则 2：机械化规则
 
-Any rule you want the Agent to follow must have a check. Three forms:
+想让 Agent 跟的每条规则都要有检查。3 种形式：
 
-- **Pre-commit hook** — fast (seconds), runs on every commit.
-- **Pre-push hook** — medium (tens of seconds), runs on every push.
-- **CI gate** — slow (minutes), exhaustive matrix on every PR.
+- **Pre-commit hook** — 快（秒级），每次 commit 跑。
+- **Pre-push hook** — 中（几十秒），每次 push 跑。
+- **CI gate** — 慢（分钟级），每次 PR 全矩阵跑。
 
-If a rule isn't worth a script, it's not worth putting in AGENTS.md. Suggestions without enforcement are noise.
+如果一条规则不值得写脚本，就不值得放 AGENTS.md。没有强制执行的建议是噪音。
 
-Examples:
-- "Use 2-space indent" → `prettier --check`
+示例：
+- "用 2 空格缩进" → `prettier --check`
 - "TypeScript strict" → `tsc --noEmit --strict`
-- "No unused exports" → `ts-prune` or `knip`
-- "Bilingual docs in sync" → custom pairing script
-- "Per-file 100% coverage" → coverage gate in CI
+- "没有未使用的 export" → `ts-prune` 或 `knip`
+- "双语文档同步" → 自定义配对脚本
+- "每文件 100% 覆盖率" → CI 覆盖率闸门
 
-### Principle 3: Bound every task with acceptance criteria
+### 原则 3：每个任务带完成标准
 
-Every task handed to the Agent must have:
-- **What done looks like** (observable, not subjective).
-- **What NOT to do** (explicit boundaries).
-- **What to escalate** (autonomous vs. must-ask split).
+每个交给 Agent 的任务必须有：
 
-If you can't write the acceptance criteria, the task isn't ready for the Agent. Refine the task until you can.
+- **"做完"长什么样**（可观察，不主观）。
+- **不要做什么**（明确的边界）。
+- **要升级什么**（自主 vs 必须问的切分）。
 
-## Anti-patterns (what to avoid)
+如果写不出完成标准，任务还没准备好给 Agent。继续打磨直到能写。
 
-- **Don't write a "philosophy" without steps.** "Communication is important" is not a rule. "Always fill a single-task contract before asking the Agent" is a rule.
-- **Don't merge AGENTS.md and README.md.** AGENTS.md is for the Agent; README.md is for humans (and other tools). Different readers, different files.
-- **Don't write decisions about things that won't recur.** Every decision should pay back its writing cost in less than a year. If it's a one-off hack, put it in the commit message.
-- **Don't make skills write-only documents.** A skill that's never invoked is dead. Trigger descriptions must be specific.
-- **Don't run the full test suite before every commit.** Use `change-scope` or equivalent to find the narrow tests that cover your diff. CI owns the full matrix.
+## 反模式（避免什么）
 
-## Scaling up
+- **不要写没有步骤的"哲学"。** "沟通很重要"不是规则。"每次给 Agent 派任务前填单任务契约"才是规则。
+- **不要把 AGENTS.md 和 README.md 合并。** AGENTS.md 给 Agent；README.md 给人（和其他工具）。读者不同，文件不同。
+- **不要为不会重复出现的事写决策。** 每条决策应该在不到一年内回本。如果是一次性 hack，放 commit 信息。
+- **不要写只读的技能。** 从不被调用的技能等于死的。触发描述必须具体。
+- **不要每次 commit 前跑完整测试套件。** 用 `change-scope` 或等价的工具找出覆盖你 diff 的窄测试。CI 负责全矩阵。
 
-This 4-piece set works for a single-developer project. As you scale:
+## 升级路径
 
-| Need | Add |
+4 件套对单人项目够用。要扩展时：
+
+| 需求 | 增加 |
 |---|---|
-| Multi-developer coordination | Stacked PRs + GitHub native stack |
-| Cross-package refactors | Architecture map (`docs/architecture.md`) with seam definitions |
-| Heavy Agent use | Snapshot tests (recorded sessions) as the canonical behavior oracle |
-| Multi-language i18n | Bilingual doc pair + pairing gate |
-| Long-running projects | Archived decisions tree for historical-only notes |
+| 多开发者协调 | 堆叠 PR + GitHub 原生 stack |
+| 跨包重构 | 架构图（`docs/architecture.md`）+ seam 定义 |
+| 重度 Agent 使用 | 快照测试（录制的会话）作为规范的行为 oracle |
+| 多语言 i18n | 双语文档对 + 配对闸门 |
+| 长跑项目 | 已归档决策树，仅历史 |
 
-Don't add any of these until the 4-piece set is running smoothly. Each one builds on the foundation.
+4 件套跑顺之前不要加这些。每块都建在基础上。
 
-## Where this came from
+## 来源
 
-Synthesized from the deepseek-harness project's `.agents/notes/` + `.agents/skills/` system. The harness is a large multi-package codebase developed by multiple humans and multiple Agents over 18+ months. The methodology scaled from "single dev + Agent" to "team + many Agents" by the same principles — materialize, mechanize, bound.
+源自 deepseek-harness 项目的 `.agents/notes/` + `.agents/skills/` 体系。该 harness 是 18 个月以上、多人、多 Agent 协作开发的大型多包代码库。方法论从"单人 + Agent"扩到"团队 + 多 Agent"用了同样的原则 —— 物化、机械化、设边界。

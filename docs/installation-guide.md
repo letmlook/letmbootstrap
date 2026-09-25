@@ -1,41 +1,43 @@
-# Installation Guide — detailed per-platform
+<!-- 语言：中文（默认） | English mirror: docs/installation-guide.en.md -->
 
-This is the long-form companion to [`INSTALL.md`](../INSTALL.md). Read `INSTALL.md` first; come here only when you need depth, troubleshooting, or platform quirks.
+# 安装指南 — 各平台详细步骤
 
-## Design principles (binding)
+本文是 [`INSTALL.md`](../INSTALL.md) 的长篇版。先读 `INSTALL.md`；需要细节、故障排查或平台特殊性时来这里。
 
-These apply to **every** install path described below:
+## 设计原则（绑定）
 
-1. **Additive only.** Every operation is `mkdir -p` + `cp -R` (or `ln -s`). Nothing is removed, renamed, or overwritten.
-2. **Skip on conflict.** If the destination already exists, the installer prints `SKIP` and moves on. It does **not** overwrite, does **not** prompt for overwrite, does **not** delete the old copy.
-3. **Idempotent.** Running the installer twice produces the same final state as running it once.
-4. **Dry-run by default.** The script prints what it would do and exits 0 without writing. `--apply` flips it to write mode.
-5. **No `rm` anywhere in the script.** `grep -rn rm scripts/install.sh` returns no matches for destructive patterns. The script contains a static guard that aborts if asked to delete anything.
-6. **No mutation of the source repo.** The installer never edits files inside `/Users/letmlook/code/letmbootstrap/` — it only reads from it.
+适用于下面描述的 **所有** 安装路径：
 
-## The skill payload
+1. **只做加法。** 每次操作都是 `mkdir -p` + `cp -R`（或 `ln -s`）。不删、不改名、不覆盖。
+2. **冲突跳过。** 如果目标已存在，安装器打印 `SKIP` 继续。不覆盖、不询问覆盖、不删旧副本。
+3. **幂等。** 跑两次和跑一次最终状态相同。
+4. **默认干跑。** 脚本打印它会做什么然后退出 0，不写。`--apply` 切换到写入模式。
+5. **脚本里无 `rm`。** `grep -nE '^[^#]*\b(rm |unlink |mv |rmdir )\b' scripts/install.sh` 对破坏性模式无匹配。脚本顶部的静态守卫在被要求删除任何东西时中止。
+6. **不改源仓库。** 安装器从不编辑 `/Users/letmlook/code/letmbootstrap/` 里的文件 —— 只读。
 
-What you actually install is a single directory:
+## 技能载荷
+
+你实际装的是单个目录：
 
 ```
 skills/letmbootstrap/
-└── SKILL.md        # the skill definition (frontmatter + procedure)
+└── SKILL.md        # 技能定义（frontmatter + 流程）
 ```
 
-Everything else in the repo (templates, docs, examples, scripts) supports the skill but is not part of the installed payload. The Agent only needs `SKILL.md` to invoke the skill; the templates and docs are referenced from inside the skill body via absolute path.
+仓库里的其他东西（模板、文档、示例、脚本）支撑技能但不是安装载荷的一部分。Agent 只需要 `SKILL.md` 就能调用技能；模板和文档通过技能正文里的绝对路径引用。
 
-If you want a richer install (e.g., the templates alongside the skill), pass `--with-templates`. The default keeps the payload minimal.
+如果你想要更丰富的安装（例如模板和技能一起），传 `--with-templates`。默认载荷最小。
 
-## Platform reference
+## 各平台参考
 
 ### MiniMax Code / Mavis
 
-- **Source:** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
-- **Target:** `~/.minimax/agents/<agent-name>/skills/letmbootstrap/`
-- **Scope:** per-Agent. Each Mavis Agent has its own skills directory.
-- **Pick the Agent name:** run `mavis agent list` to see your Agents. Default is the `mavis` Agent.
-- **Verification:** start a new session for that Agent; trigger with "letmbootstrap init" or "搭三件套".
-- **Reload required:** yes — new sessions pick up new skills automatically; existing sessions do not.
+- **源：** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
+- **目标：** `~/.minimax/agents/<agent-名>/skills/letmbootstrap/`
+- **范围：** 按 Agent。每个 Mavis Agent 有自己的技能目录。
+- **选 Agent 名：** 跑 `mavis agent list` 看你的 Agent。默认 `mavis`。
+- **验证：** 给该 Agent 开个新会话；用"letmbootstrap init"或"搭三件套"触发。
+- **需要重载：** 是 —— 新会话自动加载新技能；现有会话不会。
 
 ```bash
 AGENT_DIR="$HOME/.minimax/agents/mavis/skills"
@@ -45,11 +47,11 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$AGENT_DIR/"
 
 ### Claude Code
 
-- **Source:** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
-- **Target:** `~/.claude/skills/letmbootstrap/` *(global)* or `./.claude/skills/letmbootstrap/` *(per-project)*
-- **Scope:** global install is recommended — applies to every Claude Code session.
-- **Verification:** restart Claude Code; trigger with "letmbootstrap init".
-- **Reload required:** yes — restart the CLI.
+- **源：** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
+- **目标：** `~/.claude/skills/letmbootstrap/` *（全局）* 或 `./.claude/skills/letmbootstrap/` *（按项目）*
+- **范围：** 推荐全局 —— 作用于每个 Claude Code 会话。
+- **验证：** 重启 Claude Code；用"letmbootstrap init"触发。
+- **需要重载：** 是 —— 重启 CLI。
 
 ```bash
 mkdir -p "$HOME/.claude/skills"
@@ -58,53 +60,53 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.claude/ski
 
 ### OpenAI Codex CLI
 
-Codex's skill discovery has evolved across versions. Two reliable paths:
+Codex 的技能发现跨版本有差异。三条可靠路径：
 
-**Path A — per-project (always works):**
+**路径 A — 按项目（永远可用）：**
 
 ```bash
-cd <your-project>
+cd <你的项目>
 mkdir -p .agent-skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .agent-skills/
 ```
 
-Then reference from `AGENTS.md` or your Codex config:
+然后在 `AGENTS.md` 或 Codex 配置里引用：
 
 ```markdown
 <!-- in AGENTS.md -->
-Skills available in this repo: `./.agent-skills/`. Read `<skill-name>/SKILL.md` when the trigger phrase matches.
+本仓库可用技能：./.agent-skills/。触发短语匹配时读 <技能名>/SKILL.md。
 ```
 
-**Path B — global (newer Codex versions):**
+**路径 B — 全局（新 Codex 版本）：**
 
 ```bash
 mkdir -p "$HOME/.codex/skills"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.codex/skills/"
 ```
 
-**Path C — paste-on-invoke (universal fallback):**
+**路径 C — 调用时粘贴（万能回退）：**
 
-If neither path works, copy `SKILL.md` into the chat when you want to invoke it. No install needed.
+如果两条路径都不行，调用时把 `SKILL.md` 粘到对话里。无需安装。
 
 ### Cursor
 
-- **Source:** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
-- **Target:** `./.cursor/skills/letmbootstrap/` *(per-project only)*
-- **Scope:** Cursor doesn't have a global skills directory — install in each project.
-- **Verification:** restart the Cursor session in that project.
+- **源：** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
+- **目标：** `./.cursor/skills/letmbootstrap/` *（只能按项目）*
+- **范围：** Cursor 没有全局技能目录 —— 每个项目装。
+- **验证：** 在该项目里重启 Cursor 会话。
 
 ```bash
-cd <your-project>
+cd <你的项目>
 mkdir -p .cursor/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .cursor/skills/
 ```
 
 ### Gemini CLI
 
-- **Source:** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
-- **Target:** `~/.gemini/skills/letmbootstrap/`
-- **Scope:** global.
-- **Reload required:** restart Gemini CLI.
+- **源：** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
+- **目标：** `~/.gemini/skills/letmbootstrap/`
+- **范围：** 全局。
+- **需要重载：** 重启 Gemini CLI。
 
 ```bash
 mkdir -p "$HOME/.gemini/skills"
@@ -113,172 +115,172 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.gemini/ski
 
 ### Aider
 
-Aider has no formal skills directory. Two workable patterns:
+Aider 没有正式技能目录。两种可行模式：
 
-**Pattern A — convention file:**
+**模式 A — 约定文件：**
 
 ```bash
-cd <your-project>
+cd <你的项目>
 mkdir -p .aider
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .aider/skills/
 
-# Add to .aider/conventions.md (Aider reads this automatically):
+# 加到 .aider/conventions.md（Aider 自动读）：
 cat >> .aider/conventions.md <<'EOF'
 
-## Available skills
-When asked to "letmbootstrap init" / "搭三件套" / "init methodology":
-read `.aider/skills/letmbootstrap/SKILL.md` and follow its procedure exactly.
+## 可用技能
+当被要求 "letmbootstrap init" / "搭三件套" / "init methodology" 时：
+读 .aider/skills/letmbootstrap/SKILL.md 并严格按其流程执行。
 EOF
 ```
 
-**Pattern B — paste-on-invoke:** copy `SKILL.md` body into chat when needed.
+**模式 B — 调用时粘贴：** 需要时把 `SKILL.md` 正文粘到对话里。
 
 ### Devin
 
-- **Source:** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
-- **Target:** `./.devin/skills/letmbootstrap/` *(per-project)*
-- **Scope:** Devin reads project-local `.devin/` files. Per-project install.
-- **Verification:** reference the path in your Devin session prompt.
+- **源：** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
+- **目标：** `./.devin/skills/letmbootstrap/` *（按项目）*
+- **范围：** Devin 按会话读项目本地的 `.devin/` 文件。按项目装。
+- **验证：** 在会话提示里引用该路径。
 
 ```bash
-cd <your-project>
+cd <你的项目>
 mkdir -p .devin/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .devin/skills/
 ```
 
 ### OpenCode
 
-- **Source:** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
-- **Target (per-project):** `./.opencode/skills/letmbootstrap/`
-- **Target (global):** `~/.config/opencode/skills/letmbootstrap/`
+- **源：** `/Users/letmlook/code/letmbootstrap/skills/letmbootstrap/`
+- **目标（按项目）：** `./.opencode/skills/letmbootstrap/`
+- **目标（全局）：** `~/.config/opencode/skills/letmbootstrap/`
 
 ```bash
-# Per-project
-cd <your-project>
+# 按项目
+cd <你的项目>
 mkdir -p .opencode/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .opencode/skills/
 
-# Global
+# 全局
 mkdir -p "$HOME/.config/opencode/skills"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.config/opencode/skills/"
 ```
 
-## What the installer does, in detail
+## 安装器做了什么，细节
 
 ```
-./scripts/install.sh [--apply] [--platform <name>] [--agent-name <name>] [--symlink] [--with-templates]
+./scripts/install.sh [--apply] [--platform <名>] [--agent-name <名>] [--symlink] [--with-templates]
 ```
 
-| Flag | Meaning |
+| 标志 | 含义 |
 |---|---|
-| *(none)* | Dry-run for every detected platform. Prints planned ops and exits. |
-| `--apply` | Actually write. Without this, the script is read-only. |
-| `--platform <name>` | Restrict to one platform. Valid: `mavis`, `claude-code`, `codex`, `cursor`, `gemini-cli`, `aider`, `devin`, `opencode`. Repeatable. |
-| `--agent-name <name>` | For Mavis only — which Agent to install under. Defaults to `mavis`. |
-| `--symlink` | Symlink instead of copy. Lets you edit the repo and have changes reflected live. |
-| `--with-templates` | Also install `templates/` and a copy of `docs/methodology.md` next to the skill. Off by default — keeps the payload minimal. |
-| `--help` | Print usage. |
+| *（无）* | 对所有检测到的平台干跑。打印计划的操作并退出。 |
+| `--apply` | 实际写。不加这个脚本是只读的。 |
+| `--platform <名>` | 限制单一平台。可重复。合法：mavis、claude-code、codex、cursor、gemini-cli、aider、devin、opencode。 |
+| `--agent-name <名>` | 仅 Mavis —— 装到哪个 Agent 下。默认 `mavis`。 |
+| `--symlink` | 用软链而不是复制。改仓库时自动生效。 |
+| `--with-templates` | 同时装 `templates/` 和 `docs/methodology.md` 副本。默认关 —— 保持载荷最小。 |
+| `--help` | 打印用法。 |
 
-The script detects installed platforms by looking for these markers:
+脚本通过看这些标记来检测安装的平台：
 
-| Platform | Detection marker |
+| 平台 | 检测标记 |
 |---|---|
-| `mavis` | `$HOME/.minimax/` directory exists |
-| `claude-code` | `$HOME/.claude/` directory exists (global) **or** `./.claude/` (per-project) |
-| `codex` | `$HOME/.codex/` directory exists |
-| `cursor` | `./.cursor/` directory exists (per-project only — there's no global) |
-| `gemini-cli` | `$HOME/.gemini/` directory exists |
-| `aider` | `./.aider/` or `$HOME/.aider/` directory exists |
-| `devin` | `./.devin/` directory exists (per-project only) |
-| `opencode` | `$HOME/.config/opencode/` or `./.opencode/` directory exists |
+| `mavis` | `$HOME/.minimax/` 目录存在 |
+| `claude-code` | `$HOME/.claude/` 目录存在（全局）**或** `./.claude/`（按项目） |
+| `codex` | `$HOME/.codex/` 目录存在 |
+| `cursor` | `./.cursor/` 目录存在（只能按项目 —— 没有全局） |
+| `gemini-cli` | `$HOME/.gemini/` 目录存在 |
+| `aider` | `./.aider/` 或 `$HOME/.aider/` 目录存在 |
+| `devin` | `./.devin/` 目录存在（只能按项目） |
+| `opencode` | `$HOME/.config/opencode/` 或 `./.opencode/` 目录存在 |
 
-## Conflict policy
+## 冲突策略
 
-If the target path already exists:
+如果目标路径已存在：
 
 ```
-SKIP: ~/.claude/skills/letmbootstrap already exists. To update, remove manually then re-run with --apply.
+SKIP: ~/.claude/skills/letmbootstrap 已存在。要更新，手动删除后再跑 --apply。
 ```
 
-The script does not delete the existing copy for you. If you want to update, you do the replacement yourself (which is exactly the "you own destructive ops" principle).
+脚本不替你删旧副本。如果想更新，你自己做替换（这正是"你拥有破坏性操作"的原则）。
 
-## Symlink mode
+## 软链模式
 
 ```bash
 ./scripts/install.sh --apply --symlink
 ```
 
-Creates `~/.claude/skills/letmbootstrap → /Users/letmlook/code/letmbootstrap/skills/letmbootstrap`. Now every edit in the repo is picked up live by your Agent without re-installing.
+创建 `~/.claude/skills/letmbootstrap → /Users/letmlook/code/letmbootstrap/skills/letmbootstrap`。现在仓库里每次编辑都会被你的 Agent 实时看到，不用重装。
 
-**Trade-off:** if you move or rename the repo, every symlink breaks. Use a stable absolute path.
+**权衡：** 如果你移动或改名仓库，所有软链都断。用稳定的绝对路径。
 
-## Troubleshooting
+## 故障排查
 
-### "The skill isn't being invoked."
+### "技能没被调用。"
 
-Check, in order:
+按顺序检查：
 
-1. **Path matches your Agent's convention.** Different Agents use different paths. Cross-check the table above.
-2. **Reload.** Most Agents need a session restart to pick up new skills.
-3. **Trigger phrase.** Use one of the documented trigger phrases ("letmbootstrap init", "搭三件套"). The skill's `description:` frontmatter is what matches.
-4. **Frontmatter parsing.** Open the installed `SKILL.md` and confirm the YAML frontmatter at the top is intact (`name:`, `description:`). If your Agent mangled the file, re-copy it.
+1. **路径匹配你的 Agent 约定。** 不同 Agent 路径不同。交叉检查上表。
+2. **重载。** 大多数 Agent 需要重启会话来加载新技能。
+3. **触发短语。** 用文档化的触发短语之一（"letmbootstrap init"、"搭三件套"）。技能匹配靠 `description:` frontmatter。
+4. **Frontmatter 解析。** 打开已装的 `SKILL.md` 确认顶部的 YAML frontmatter 完整（`name:`、`description:`）。如果你的 Agent 把文件弄坏了，重新复制。
 
-### "It overwrote my existing files."
+### "它覆盖了我已有的文件。"
 
-It shouldn't have — the installer skips on conflict and the skill itself asks before overwriting. If this happened:
+不应该 —— 安装器跳过冲突，技能本身在覆盖前会问。如果真发生了：
 
-1. Check `git status` (or your VCS) for what actually changed.
-2. Report a bug with the exact install command and target path. The installer has a static guard against `rm` and against writes-without-flag; if a delete happened, that's a script bug.
+1. 查 `git status`（或你的 VCS）看实际改了什么。
+2. 用精确的安装命令和目标路径报 bug。安装器对 `rm` 有静态守卫、对"无标志不写"有保护；如果发生删除，那是脚本 bug。
 
-### "I want to uninstall."
+### "我想卸载。"
 
-The skill has no uninstall path on purpose. To remove manually:
+技能刻意没有卸载路径。要手动移除：
 
 ```bash
-rm -rf <install-path>/letmbootstrap
+rm -rf <安装路径>/letmbootstrap
 ```
 
-This is something **you** do. The skill and installer never do it for you.
+这是 **你自己** 做的。技能和安装器都从不替你做。
 
-### "My Agent isn't listed."
+### "我的 Agent 没列出来。"
 
-Open an issue with:
+开个 issue 并附：
 
-- Agent name + homepage
-- Where it looks for skills (path)
-- Whether it supports SKILL.md frontmatter (name/description)
+- Agent 名 + 主页
+- 它在哪里找技能（路径）
+- 是否支持 SKILL.md frontmatter（name/description）
 
-… and we'll add a row to the compatibility matrix. The skill itself is portable — only the install target differs.
+…我们会在兼容矩阵加一行。技能本身是可移植的 —— 只有安装目标不同。
 
-## Re-running the installer
+## 重跑安装器
 
-Re-running is safe. The installer is idempotent: on a clean target, it installs once; on a populated target, it skips and reports. It never overwrites, never deletes, never renames.
+重跑是安全的。安装器是幂等的：在干净目标上装一次；在已有目标上跳过并报告。永不覆盖、永不删除、永不改名。
 
-## Updating to a newer version
+## 升级到更新版本
 
-Two patterns:
+两种模式：
 
-**Pattern A — manual replace** (recommended for production):
+**模式 A — 手动替换**（生产推荐）：
 
 ```bash
 cd /Users/letmlook/code/letmbootstrap && git pull
 
-# For each install target you have, replace the directory:
+# 对每个安装目标，替换目录：
 cp -R skills/letmbootstrap "$HOME/.claude/skills/letmbootstrap"
 ```
 
-You do the `rm -rf` yourself, then `cp -R`. The installer doesn't do either.
+你自己执行 `rm -rf`，然后 `cp -R`。安装器两个都不做。
 
-**Pattern B — symlink during development** (recommended for skill authors):
+**模式 B — 开发期软链**（技能作者推荐）：
 
 ```bash
 ./scripts/install.sh --apply --symlink
 ```
 
-Edits in the repo are picked up live. Use only when you're actively iterating.
+仓库里的编辑实时生效。仅在你积极迭代时用。
 
-## What this guide does NOT cover
+## 本指南不覆盖什么
 
-- Uninstall — intentionally absent. See the decision note [`0001-keep-skill-non-destructive.md`](decisions/0001-keep-skill-non-destructive.md).
-- Migration between Agents — out of scope for v1. Reinstall on the new platform.
-- Auto-update — out of scope. Pull + manual replace (or symlink during dev).
+- **卸载** — 故意不写。见决策 [`0001-keep-skill-non-destructive.md`](decisions/0001-keep-skill-non-destructive.md)。
+- **跨 Agent 迁移** — v1 范围外。在新平台重装。
+- **自动更新** — 范围外。手动拉 + 手动替换（或开发期软链）。

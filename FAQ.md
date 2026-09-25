@@ -1,161 +1,163 @@
+<!-- 语言：中文（默认） | English mirror: FAQ.en.md -->
+
 # FAQ
 
-Common questions, organized by topic. If your question isn't here, open an issue.
+常见问题，按主题分组。这里没收录的请开 issue。
 
-## General
+## 总览
 
-### What does letmbootstrap actually do?
+### letmbootstrap 到底是干什么的？
 
-It installs a 4-piece anti-drift setup (`AGENTS.md` + `docs/decisions/` + `skills/` + single-task contract) into a project, customized to that project. The setup keeps Agent collaboration consistent across sessions — no more re-litigating settled decisions or re-prompting forgotten rules.
+它在目标项目里安装 4 件套防跑偏骨架（`AGENTS.md` + `docs/decisions/` + `skills/` + 单任务契约），按项目定制。让 Agent 协作跨会话保持一致 —— 不再反复争论已敲定的决策、不再反复提醒忘记的规则。
 
-### Is this just for solo developers?
+### 这个项目只给单人开发者用吗？
 
-It started there. It also works for small teams and for projects where multiple Agents (or multiple Agent sessions) collaborate on the same code. The methodology scales by the same principles (materialize, mechanize, bound), but the AGENTS.md and decision log become more important as more readers (human and Agent) consume them.
+起步是。但它对小型团队、以及多个 Agent（或多个 Agent 会话）在同一份代码上协作的项目也适用。同样的原则（物化、机械化、设边界）能放大规模，只是 AGENTS.md 和决策日志在更多读者（人和 Agent）共用时会更重要。
 
-### Is this tied to a specific Agent?
+### 必须绑定某个特定 Agent 吗？
 
-No. The skill works on any Agent that loads `SKILL.md` files and matches trigger phrases against the `description:` frontmatter. Compatibility matrix at [`agent-compatibility.md`](agent-compatibility.md).
+不。技能能在任何加载 `SKILL.md` 并用 `description:` frontmatter 匹配触发短语的 Agent 上跑。兼容矩阵见 [`docs/agent-compatibility.md`](docs/agent-compatibility.md)。
 
-### What language is the skill body in?
+### 技能正文是什么语言？
 
-English. The trigger phrases include both English ("letmbootstrap init") and Chinese ("搭三件套", "初始化方法论") for convenience.
+中文。触发短语中英文都有（"letmbootstrap init"、"搭三件套"、"初始化方法论"、"letmbootstrap 初始化"），方便中英用户。
 
-## Install / uninstall
+## 安装 / 卸载
 
-### How do I install the letmbootstrap skill on my Agent?
+### 怎么把 letmbootstrap 技能装到我的 Agent？
 
 ```bash
 git clone https://github.com/letmlook/letmbootstrap.git
 cd letmbootstrap
-./scripts/install.sh                # dry-run, see what would happen
-./scripts/install.sh --apply        # actually install
+./scripts/install.sh                # 干跑，看会装到哪
+./scripts/install.sh --apply        # 实际安装
 ```
 
-Or follow [`INSTALL.md`](../INSTALL.md) for the one-pager. Details at [`installation-guide.md`](installation-guide.md).
+或看 [`INSTALL.md`](INSTALL.md) 的快速版。详细各平台步骤见 [`docs/installation-guide.md`](docs/installation-guide.md)。
 
-### How do I uninstall it?
+### 怎么卸载？
 
-Manually. The installer never deletes anything, by design. To uninstall:
+手动。安装器从不删除任何东西，这是设计。要卸载：
 
 ```bash
-rm -rf "$HOME/.claude/skills/letmbootstrap"   # or wherever you installed it
+rm -rf "$HOME/.claude/skills/letmbootstrap"   # 或你装到的任何路径
 ```
 
-This is something you do yourself — see [`docs/decisions/0001-keep-skill-non-destructive.md`](decisions/0001-keep-skill-non-destructive.md) for why there's no uninstall command.
+这是你自己做的事 —— 见 [`docs/decisions/0001-keep-skill-non-destructive.md`](docs/decisions/0001-keep-skill-non-destructive.md) 为什么没有卸载命令。
 
-### Can I install just for one project?
+### 能只装到一个项目里吗？
 
-Yes. For per-project installs (Cursor, Devin, Codex per-project):
+可以。按项目安装（Cursor、Devin、Codex 按项目）：
 
 ```bash
-cd <your-project>
+cd <你的项目>
 mkdir -p .cursor/skills
 cp -R /path/to/letmbootstrap/skills/letmbootstrap .cursor/skills/
 ```
 
-The skill is identical across global and per-project installs.
+技能本体在全局和按项目安装下完全相同。
 
-### I already have a `~/.claude/skills/letmbootstrap` from an older version. How do I update?
+### 我已经有老版本的 `~/.claude/skills/letmbootstrap`，怎么更新？
 
-Re-run the installer — it skips existing installations. To actually update, manually replace:
+重跑安装器 —— 它跳过已存在的安装。要真更新就手动替换：
 
 ```bash
-rm -rf ~/.claude/skills/letmbootstrap   # you do this manually
+rm -rf ~/.claude/skills/letmbootstrap   # 你手动执行
 cp -R /path/to/letmbootstrap/skills/letmbootstrap ~/.claude/skills/
 ```
 
-Or use `--symlink` mode during development for live updates:
+或者开发期用 `--symlink` 实现热更新：
 
 ```bash
 ./scripts/install.sh --apply --symlink
 ```
 
-## Methodology
+## 方法论
 
-### Why "letmbootstrap"?
+### 为什么叫 letmbootstrap？
 
-"let me bootstrap" + "the methodology". Pronounced "let-me-bootstrap". Short enough to type in chat.
+"let me bootstrap" + "方法论"。读作 "let-me-bootstrap"。短到能在对话里打出来。
 
-### Why not just AGENTS.md? Isn't that enough?
+### 为什么不能只要 AGENTS.md？那样不够吗？
 
-AGENTS.md is the constitution, but it's not enough on its own. Without `docs/decisions/`, the Agent re-litigates settled choices. Without `skills/`, the Agent improvises procedures that drift. Without the single-task contract, scope creep is uncontrolled. Each piece targets a specific failure mode — see [`methodology.md`](methodology.md) for the failure mode mapping.
+AGENTS.md 是宪法，但光靠它不够。没有 `docs/decisions/`，Agent 会反复争论已敲定的选择。没有 `skills/`，Agent 会即兴发挥导致漂移。没有单任务契约，scope 蔓延就管不住。每个组件针对一种特定的失效模式 —— 见 [`docs/methodology.md`](docs/methodology.md) 的失效模式映射。
 
-### What if I only want AGENTS.md?
+### 如果我只想要 AGENTS.md 呢？
 
-The skill asks. If you say "just AGENTS.md", it skips `docs/decisions/` and `skills/`. But the methodology is more effective with all four pieces — the cost is small and the ROI compounds.
+技能会问。你说"只要 AGENTS.md"，它就跳过 `docs/decisions/` 和 `skills/`。但 4 件套全套效果更好 —— 成本小、复利高。
 
-### Do I need to fill the single-task contract for trivial tasks?
+### 微小任务也要填单任务契约吗？
 
-No. The contract is for non-trivial tasks. A trivial task (rename a variable, fix a typo) doesn't need one. The judgment: if you can answer "what does done look like?" in one sentence, skip the contract.
+不用。契约是给非平凡任务用的。小任务（改个变量名、修个错别字）不用。能用一句话说清"做完长啥样"的，跳过契约。
 
-### My AGENTS.md is getting long. Should I split it?
+### 我的 AGENTS.md 越来越长，要拆分吗？
 
-Yes, if it grows past ~80 lines. Push detail into `docs/architecture.md`, `docs/ci.md`, etc. The AGENTS.md should be a one-screen index, not the full reference.
+要，超过 ~80 行就要拆。把细节推到 `docs/architecture.md`、`docs/ci.md` 等。AGENTS.md 应该是"一屏能看完的索引"，不是完整参考。
 
-## Decisions
+## 决策
 
-### What goes in a decision record vs. AGENTS.md?
+### AGENTS.md 和决策记录该写什么？
 
-**AGENTS.md** is for rules that apply to *every* change (anti-goals, forbidden ops, definition of done). **Decision records** are for one-off choices (we picked library X, we rejected library Y). If the rule recurs across many decisions, it belongs in AGENTS.md. If it's a single choice with a rationale, it belongs in a decision.
+**AGENTS.md** 写适用于 *每次* 变更的规则（反目标、禁区、完成标准）。**决策记录** 写一次性的选择（我们选了库 X、拒绝了库 Y）。如果一条规则在很多决策里都出现，就归 AGENTS.md。如果是一个选择 + 理由，归决策记录。
 
-### Can I edit a decision after it's implemented?
+### 决策实施后能改吗？
 
-Yes, if the situation changed. Move the old version to `implemented/` (with a note), write a new decision in `proposed/`. Don't rewrite history — append a new record.
+可以，但只能通过追加新决策反转。旧版本移到 `implemented/`（带说明），写一条新的在 `proposed/`。不要改写历史 —— 追加新记录。
 
-### What if I have nothing to put in "Alternatives considered"?
+### "考虑过的方案" 那一节实在写不出来怎么办？
 
-Use the marker:
+用占位标记：
 
 ```markdown
 <!-- alternatives-not-recorded (pre-format or informal decision) -->
 ```
 
-This is honest: "we didn't record the alternatives at the time." Future readers will know not to trust the alternatives section as exhaustive.
+这很诚实："当时我们没记下方案"。以后的读者会知道不要把这一节当成完整的对比。
 
-## Non-destructive guarantee
+## 非破坏性保证
 
-### Why no `--force` or `--reset` flag?
+### 为什么没有 `--force` 或 `--reset` 标志？
 
-See [`docs/decisions/0001-keep-skill-non-destructive.md`](decisions/0001-keep-skill-non-destructive.md). The short answer: any flag that overrides skip-on-conflict is one keystroke away from accidental deletion. The skill values durability; users do destructive ops themselves.
+见 [`docs/decisions/0001-keep-skill-non-destructive.md`](docs/decisions/0001-keep-skill-non-destructive.md)。简短回答：任何覆盖"冲突跳过"行为的标志都离误删只有一个按键距离。技能的价值是持久性，破坏性操作由用户自己执行。
 
-### What if I really want to delete the installed skill?
+### 如果我真的想删除已安装的技能？
 
-You do it manually:
+你自己执行：
 
 ```bash
 rm -rf <install-path>/letmbootstrap
 ```
 
-This is intentional. The skill doesn't know what else might be at `<install-path>/` (other skills, your own files), so it refuses to do this for you.
+这是刻意的。技能不知道 `<install-path>/` 下还有什么（其他技能、你自己的文件），所以拒绝替你做。
 
-### What if my Agent gets into a loop trying to delete files?
+### 我的 Agent 进入"试图删除文件"的死循环怎么办？
 
-That's a different problem — likely the agent's behavior, not the skill's. Check the skill's output: did it actually try to delete, or did it refuse? If it refused correctly, the loop is the Agent re-asking. Force the Agent to "stop" and use manual cleanup.
+那是另一个问题 —— 大概率是 Agent 行为问题，不是技能问题。检查技能输出：它到底是试着删了，还是拒绝了？如果正确拒绝了，死循环是 Agent 在重复发问。强制 Agent "stop" 然后手动清理。
 
-## Compatibility
+## 兼容性
 
-### Will this work on my Agent?
+### 我的 Agent 能用吗？
 
-Check [`agent-compatibility.md`](agent-compatibility.md). If your Agent isn't listed, the universal fallback is paste-on-invoke: copy `SKILL.md` into chat with "follow this procedure."
+查 [`docs/agent-compatibility.md`](docs/agent-compatibility.md)。如果你的 Agent 没列出来，万能回退是"调用时粘贴"：把 `SKILL.md` 正文粘到对话里说"按这个流程执行"。
 
-### Why don't you publish to skill marketplaces?
+### 为什么不发布到技能市场？
 
-Same reason as no uninstall: external install paths introduce failure modes we don't control. A marketplace update could break your install; we don't ship from one. Install directly from the repo.
+和"没有卸载"是同一个原因：外部安装路径会引入我们控制不了的失效模式。市场更新可能破坏你的安装；我们不从那里发。直接从仓库装。
 
-## Contributing
+## 贡献
 
-### How do I send a PR?
+### 怎么提 PR？
 
-See [`CONTRIBUTING.md`](../CONTRIBUTING.md). Short version: write a single-task contract for yourself, then send the PR.
+见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。简短版：先给自己写一份单任务契约，再提 PR。
 
-### Can I add a destructive operation to the skill?
+### 能给技能加破坏性操作吗？
 
-No. Per [decision 0001](decisions/0001-keep-skill-non-destructive.md), destructive operations are not part of v1 and any PR introducing them is rejected. If you have a use case, write a new decision record (`0002`) laying out the consent flow.
+不能。按 [决策 0001](docs/decisions/0001-keep-skill-non-destructive.md)，破坏性操作不在 v1，任何引入它们的 PR 都会被拒。如果你有真实需求，先写一条新的决策记录（`0002`）说明同意流程。
 
-### Why MIT license?
+### 为什么要 MIT 协议？
 
-Standard, permissive, compatible with most other licenses. The repo is small enough that the license choice doesn't matter much — what matters is that the work is reusable.
+标准、宽松、跟大多数其他协议兼容。本仓库足够小，协议选择没那么重要 —— 关键是作品可复用。
 
 ---
 
-This FAQ mirrors itself between [`docs/faq.md`](faq.md) and [`/FAQ.md`](../FAQ.md). Keep them in sync if you edit one.
+本 FAQ 在 [`FAQ.en.md`](FAQ.en.md) （英文镜像）和本文件之间镜像。编辑其中一处时记得同步。

@@ -1,45 +1,47 @@
-# Code of Conduct
+<!-- 语言：中文（默认） | English mirror: CODE_OF_CONDUCT.en.md -->
 
-## Our pledge
+# 行为准则
 
-We pledge to make participation in this project a welcoming and inclusive experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+## 我们的承诺
 
-## Our standards
+为了让每个人都能无歧视地参与本项目，无论年龄、体型、残疾、族裔、性别特征、性别认同与表达、经验水平、教育程度、社会经济地位、国籍、外貌、种族、宗教或性取向，我们承诺让参与本项目成为一次受欢迎且包容的体验。
 
-Examples of behavior that contributes to a positive environment:
+## 我们的标准
 
-- Demonstrating empathy and kindness toward other people
-- Being respectful of differing opinions, viewpoints, and experiences
-- Giving and gracefully accepting constructive feedback
-- Focusing on what is best for the community
-- Showing empathy toward other community members
+有助于创造积极环境的行为示例：
 
-Examples of unacceptable behavior:
+- 对他人展现共情与善意
+- 尊重不同的观点、视角和经历
+- 优雅地给出和接受建设性反馈
+- 聚焦对社区最有利的事
+- 对其他社区成员展现共情
 
-- The use of sexualized language or imagery, and sexual attention or advances of any kind
-- Trolling, insulting or derogatory comments, and personal or political attacks
-- Public or private harassment
-- Publishing others' private information without their explicit permission
-- Other conduct which could reasonably be considered inappropriate in a professional setting
+不可接受的行为示例：
 
-## Enforcement responsibilities
+- 使用带性意味的语言或图像，以及任何形式的性关注或性挑逗
+- 挑衅、侮辱或贬损的评论，以及人身或政治攻击
+- 公开或私下骚扰
+- 未经明确许可发布他人私人信息
+- 在专业场合中可被合理认为不合适的其他行为
 
-Project maintainers are responsible for clarifying and enforcing standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.
+## 执行责任
 
-Maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that do not align with this Code of Conduct, and will communicate reasons for moderation decisions when appropriate.
+项目维护者有责任澄清并执行可接受行为的标准，并将对任何他们认为不恰当、威胁性、冒犯性或有害的行为采取适当且公正的纠正措施。
 
-## Scope
+维护者有权且有责任移除、编辑或拒绝不符合本行为准则的评论、commit、代码、wiki 编辑、issue 和其他贡献，并在适当时给出管理决策的理由。
 
-This Code of Conduct applies within all project spaces — issues, pull requests, comments, and any other communication channel. It also applies when an individual is representing the project in public spaces.
+## 适用范围
 
-## Enforcement
+本行为准则适用于所有项目空间 —— issue、PR、评论和任何其他沟通渠道。它也适用于个人在公共空间代表本项目时。
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainer via the contact channel listed in [`SECURITY.md`](SECURITY.md) (use a non-security subject for non-security reports). All complaints will be reviewed and investigated promptly and fairly.
+## 执行
 
-All community leaders are obligated to respect the privacy and security of the reporter of any incident.
+虐待、骚扰或其他不可接受行为的实例可通过 [`SECURITY.md`](SECURITY.md) 中列出的联系渠道上报给维护者（非安全问题请用非安全主题）。所有投诉都会被及时且公正地审查和调查。
 
-## Attribution
+所有社区领导都有义务尊重事件举报者的隐私和安全。
 
-This Code of Conduct is adapted from the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html).
+## 致谢
 
-For answers to common questions about this code of conduct, see the [Contributor Covenant FAQ](https://www.contributor-covenant.org/faq). Translations are available at the [Contributor Covenant translations page](https://www.contributor-covenant.org/translations).
+本行为准则改编自 [Contributor Covenant 2.1](https://www.contributor-covenant.org/zh-cn/version/2/1/code_of_conduct)。
+
+关于本行为准则的常见问题见 [Contributor Covenant FAQ](https://www.contributor-covenant.org/faq)。翻译版见 [Contributor Covenant 翻译页](https://www.contributor-covenant.org/translations)。

@@ -1,72 +1,76 @@
-# Changelog
+<!-- 语言：中文（默认） | English mirror: CHANGELOG.en.md -->
 
-All notable changes to this project will be documented in this file.
+# 更新日志
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+本项目的所有显著变更都会记录在此文件。
 
-The skill's `SKILL.md` frontmatter is part of the API contract. Any change to it that affects external behavior is a minor version bump minimum.
+格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
+本项目遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/spec/v2.0.0.html)。
 
-## [Unreleased]
+技能的 `SKILL.md` frontmatter 是 API 契约的一部分。任何影响外部行为的变更至少 minor bump。
 
-### Added
+## [未发布]
 
-- `ARCHITECTURE.md` — five-layer architecture overview
-- `CONTRIBUTING.md` — PR workflow + decision record conventions
-- `SECURITY.md` — security reporting policy
-- `CODE_OF_CONDUCT.md` — community norms
-- `LICENSE` — MIT
-- `docs/skills-catalog.md` — catalog of shipped skills + how to write more
-- `docs/faq.md` — common questions
-- `docs/glossary.md` — terminology
-- `templates/README.md` — guide to the templates
-- `scripts/README.md` — guide to the scripts
-- `examples/README.md` — guide to the examples
+### 新增
 
-### Changed
+- **全面中文化** — 所有顶层文档、`docs/` 下文档、模板、脚本说明、示例、技能的 default 版本改为中文。
+- 英文版本以 `.en.md` 镜像形式保留在同目录，与中文版同步。
 
-- `AGENTS.md` — "Where new things go" expanded; "Forbidden" lists destructive ops
-- `README.md` — indexes all new docs
-- `docs/decisions/0001-keep-skill-non-destructive.md` — referenced from more places
+### 变更
+
+- README/AGENTS/CHANGELOG 等顶层文档的 default 语言切换为中文。
+- AGENTS.md 的"新东西放哪"增补双语镜像规则。
 
 ## [0.1.0] — 2026-09-26
 
-### Added
+### 新增
 
-- `README.md` — overview + Quick Start
-- `INSTALL.md` — 1-page Agent-platform install guide
-- `AGENTS.md` — dogfooded project constitution
-- `docs/methodology.md` — 4-piece anti-drift narrative
-- `docs/installation-guide.md` — per-platform install details + troubleshooting
-- `docs/agent-compatibility.md` — compatibility matrix across 8 Agent platforms
-- `docs/decisions/0001-keep-skill-non-destructive.md` — non-destructive guarantee
-- `templates/AGENTS.md.template` — project constitution template
-- `templates/decision.md.template` — decision record template
-- `templates/single-task-contract.md` — task contract template
-- `skills/letmbootstrap/SKILL.md` — the bootstrap skill (hard rules section at top)
-- `scripts/install.sh` — non-destructive installer (static guard + dry-run default)
-- `examples/letmbootstrap-self/` — dogfood example of skill output
-- `.gitignore` — macOS + editor + temp exclusions
+- `README.md` — 总览 + 快速上手
+- `INSTALL.md` — 一页 Agent 平台安装指南
+- `AGENTS.md` — dogfooded 项目宪法
+- `docs/methodology.md` — 4 件套防跑偏叙事
+- `docs/installation-guide.md` — 各平台安装细节 + 故障排查
+- `docs/agent-compatibility.md` — 8 个 Agent 平台的兼容矩阵
+- `docs/decisions/0001-keep-skill-non-destructive.md` — 非破坏性保证
+- `templates/AGENTS.md.template` — 项目宪法模板
+- `templates/decision.md.template` — 决策记录模板
+- `templates/single-task-contract.md` — 单任务契约模板
+- `skills/letmbootstrap/SKILL.md` — 引导技能（顶部硬规则一节）
+- `scripts/install.sh` — 非破坏性安装器（静态守卫 + 默认干跑）
+- `examples/letmbootstrap-self/` — 技能输出的 dogfood 示例
+- `.gitignore` — macOS + 编辑器 + 临时文件排除
+- `ARCHITECTURE.md` — 五层架构总览
+- `CONTRIBUTING.md` — PR 流程 + 决策记录约定
+- `SECURITY.md` — 安全上报策略
+- `CODE_OF_CONDUCT.md` — 社区公约
+- `LICENSE` — MIT
+- `docs/skills-catalog.md` — 已发布技能 + 如何编写
+- `FAQ.md` / `GLOSSARY.md` — 速查参考（顶层）
+- `templates/README.md` — 模板指引
+- `scripts/README.md` — 脚本指引
+- `examples/README.md` — 示例指引
 
-### Design commitments (binding across versions)
+> 注：`docs/faq.md` 和 `docs/glossary.md` 在 0.1.0 中是 `FAQ.md` 和 `GLOSSARY.md` 的镜像副本。在 [未发布] 段删除以减少维护负担 —— 顶层版本为唯一规范位置。
 
-- **Non-destructive by default.** No `rm`, `unlink`, `mv`, `rmdir`, no `--force`, no `--reset`, no uninstall subcommand. See decision 0001.
-- **Idempotent installer.** Re-running `scripts/install.sh` is always safe.
-- **Skip-on-conflict.** If the install target already exists, the installer prints SKIP and moves on.
-- **Static guard.** `scripts/install.sh` aborts with exit code 78 if a non-comment line grows a destructive pattern.
+### 设计承诺（跨版本绑定）
 
-## Versioning policy
+- **默认非破坏性。** 无 `rm`、`unlink`、`mv`、`rmdir`，无 `--force`、无 `--reset`、无卸载子命令。见决策 0001。
+- **幂等安装器。** 重跑 `scripts/install.sh` 永远安全。
+- **冲突跳过。** 安装目标已存在时，打印 `SKIP` 继续。
+- **静态守卫。** `scripts/install.sh` 一旦非注释行出现破坏性模式，以退出码 78 中止。
 
-| Change | Version bump |
+## 版本策略
+
+| 变更 | 版本 bump |
 |---|---|
-| Skill `SKILL.md` frontmatter or body changes external behavior | minor (0.x.0) |
-| Add a new platform detector to `scripts/install.sh` | minor |
-| Add a new template | minor |
-| Add a new decision record | patch |
-| Clarify / correct existing docs | patch |
-| Add a new example | patch |
-| Bug fix that doesn't change behavior | patch |
-| Anything that introduces destructive ops | **rejected** — see decision 0001 |
+| 技能 `SKILL.md` frontmatter 或正文改变外部行为 | minor (0.x.0) |
+| 给 `scripts/install.sh` 加新平台检测器 | minor |
+| 加新模板 | minor |
+| 加新决策记录 | patch |
+| 澄清 / 修正现有文档 | patch |
+| 加新示例 | patch |
+| 不改变行为的 bug 修复 | patch |
+| 任何引入破坏性操作的东西 | **拒** —— 见决策 0001 |
 
-[Unreleased]: https://github.com/letmlook/letmbootstrap/compare/v0.1.0...HEAD
+[未发布]: https://github.com/letmlook/letmbootstrap/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/letmlook/letmbootstrap/releases/tag/v0.1.0

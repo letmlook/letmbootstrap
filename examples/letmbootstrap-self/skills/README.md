@@ -1,52 +1,54 @@
-# skills/ — project-specific Agent procedures
+<!-- 语言：中文（默认） | English mirror: examples/letmbootstrap-self/skills/README.en.md -->
 
-This directory holds **project-specific** Agent skills — step-by-step procedures the Agent follows without improvising.
+# skills/ — 项目特定的 Agent 流程
 
-The letmbootstrap skill itself (the one that bootstrapped this very project) lives at [`../../skills/letmbootstrap/SKILL.md`](../../skills/letmbootstrap/SKILL.md) in the repo root. That's the "install the methodology into a target project" skill. This directory is for skills that apply to *this* project once it's set up.
+本目录放 **项目特定** 的 Agent 技能 —— Agent 不即兴发挥的逐步流程。
 
-## When to add a skill here
+letmbootstrap 技能本身（引导了这个项目的那个）住在仓库根 [`../../skills/letmbootstrap/SKILL.md`](../../skills/letmbootstrap/SKILL.md)。那是"把方法论装进目标项目"的技能。本目录是给 *这个项目* 装好后用的特定技能。
 
-Add a skill when you find yourself giving the Agent the same multi-step instructions more than twice. If the instructions are short and one-off, just put them in chat. If they're long, recurring, and verifiable, write a skill.
+## 何时在这里加技能
 
-Common candidates:
+发现你给 Agent 同样的多步指令超过两次时，加技能。如果指令又短又一次性，放对话里。如果又长、又重复、又可验证，写技能。
 
-- `pre-push-checks` — narrow test selection before push
-- `code-review` — what to check in a PR for this project
-- `debug-flaky-test` — isolation, quiescence, restoration
-- `release-checklist` — version bump, changelog, tags
+常见候选：
 
-## Skill format
+- `pre-push-checks` — push 前的窄测试选择
+- `code-review` — 给定项目 PR 里检查什么
+- `debug-flaky-test` — 隔离、静默、恢复
+- `release-checklist` — 版本号、changelog、tag
 
-Each skill is a directory with a `SKILL.md` file:
+## 技能格式
+
+每个技能是一个目录里有 `SKILL.md`：
 
 ```
-skills/<skill-name>/
+skills/<技能名>/
 └── SKILL.md
 ```
 
-The `SKILL.md` must have YAML frontmatter:
+`SKILL.md` 必须有 YAML frontmatter：
 
 ```markdown
 ---
-name: <skill-name>
-description: Use when <specific trigger> — <one-line summary of what it does>.
+name: <技能名>
+description: 当 <具体触发> 时使用 — <一句话总结它做什么>.
 ---
 ```
 
-The `description:` field is the hardest part to write. It must be specific enough to match the trigger but not so narrow that the Agent never invokes it.
+`description:` 字段是最难写的部分。必须足够具体能匹配触发，但不能太窄以至于 Agent 从不调用。
 
-The body is step-by-step procedure with verifiable success criteria. No subjective advice.
+正文是带可验证成功标准的逐步流程。无主观建议。
 
-## Forbidden
+## 禁区
 
-- Don't add a skill for one-off operations — use chat or commit messages.
-- Don't add a skill whose description says "useful for code review" — that's too vague to ever trigger.
-- Don't write a skill that contradicts the parent project constitution (`AGENTS.md`).
-- Don't add destructive operations to skills (no `rm`, `unlink`, `mv`, `rmdir`). Skills are additive.
+- 不要为一次性操作加技能 —— 用对话或 commit 信息。
+- 不要加 `description:` 写"对代码审查有用"的技能 —— 太模糊永远不会触发。
+- 不要写和父项目宪法（`AGENTS.md`）矛盾的技能。
+- 不要给技能加破坏性操作（无 `rm`、`unlink`、`mv`、`rmdir`）。技能只做加法。
 
-## See also
+## 另见
 
-- [`../single-task-contract.md`](../single-task-contract.md) — fill this in before each Agent task
-- [`../AGENTS.md`](../AGENTS.md) — the project constitution
-- [`../../docs/methodology.md`](../../docs/methodology.md) — the methodology narrative
-- [`../../skills/letmbootstrap/SKILL.md`](../../skills/letmbootstrap/SKILL.md) — the bootstrap skill
+- [`../single-task-contract.md`](../single-task-contract.md) — 每次给 Agent 派任务前填这个
+- [`../AGENTS.md`](../AGENTS.md) — 项目宪法
+- [`../../docs/methodology.md`](../../docs/methodology.md) — 方法论叙事
+- [`../../skills/letmbootstrap/SKILL.md`](../../skills/letmbootstrap/SKILL.md) — 引导技能

@@ -1,191 +1,191 @@
 ---
 name: letmbootstrap
-description: Use when initializing a new project (or retrofitting an existing project) with the letmbootstrap collaboration methodology — installs the AGENTS.md constitution, docs/decisions/ decision log, and skills/ scaffolding so the project follows the 4-piece anti-drift setup. Trigger phrases include "letmbootstrap init", "init methodology", "bootstrap letmbootstrap", "搭三件套", "初始化方法论", "letmbootstrap 初始化", and any request to apply the methodology template to a project. Do NOT use this skill for projects that are already initialized — check first.
+description: 当初始化新项目（或改造现有项目）时使用 — 安装 AGENTS.md 宪法、docs/decisions/ 决策日志和 skills/ 脚手架，让项目遵循 4 件套防跑偏骨架。触发短语包括 "letmbootstrap init"、"bootstrap letmbootstrap"、"init methodology"、"搭三件套"、"初始化方法论"、"letmbootstrap 初始化"，以及任何将方法论模板应用到项目的请求。不要用于已经初始化的项目 — 请先检查。Use when initializing a new project (or retrofitting an existing one) — installs the AGENTS.md constitution, docs/decisions/ decision log, and skills/ scaffolding so the project follows the 4-piece anti-drift setup.
 ---
 
-# Bootstrapping the letmbootstrap Methodology
+# 引导 letmbootstrap 方法论
 
-Install the letmbootstrap 4-piece set (`AGENTS.md` + `docs/decisions/` + `skills/`) into a target project so that an Agent working in that project follows the anti-drift discipline from day one.
+把 letmbootstrap 4 件套（`AGENTS.md` + `docs/decisions/` + `skills/`）装到目标项目，让 Agent 在那个项目里从第一天起就遵守防跑偏纪律。
 
-The source of truth for the methodology lives at `/Users/letmlook/code/letmbootstrap/`. Read `templates/`, `docs/methodology.md`, and the example `AGENTS.md` from there before doing anything.
+方法论的源头在 `/Users/letmlook/code/letmbootstrap/`。动手前先读那里的 `templates/`、`docs/methodology.md` 和示例 `AGENTS.md`。
 
-If you arrived here because you want to **install the letmbootstrap skill itself into your Agent platform** (Claude Code, MiniMax Code, Codex CLI, etc.) instead of installing the methodology into a project, read [`INSTALL.md`](../../INSTALL.md) instead — that path is non-destructive and platform-specific. This SKILL.md assumes the skill is already installed.
+如果你是想 **把 letmbootstrap 技能本身装到你的 Agent 平台**（Claude Code、MiniMax Code、Codex CLI 等），而不是把方法论装进项目，读 [`INSTALL.md`](../../INSTALL.md) —— 那条路径非破坏性、平台特定。本 SKILL.md 假设技能已装好。
 
-## Hard rules — non-destructive by default
+## 硬规则 — 默认非破坏性
 
-These rules apply to **every step below**. They cannot be overridden by user request without an explicit, confirmed, separate consent for each file affected.
+以下规则对 **下面每个步骤** 生效。它们无法被用户请求覆盖，除非对每个受影响文件有单独明确确认的同意。
 
-1. **Never `rm`, `unlink`, `mv`, or otherwise delete an existing file.** The skill has no uninstall path. If a user asks to remove a previously installed file, refuse and point them at manual cleanup.
-2. **Never overwrite an existing file without per-file explicit consent.** "Initialize my project" does not grant consent to overwrite `AGENTS.md` if one already exists. Each overwrite requires its own confirmation.
-3. **Default to additive operations only.** New files are fine; replacements require consent; deletions are forbidden.
-4. **Idempotent: re-running the skill is safe.** Running the bootstrap twice on a clean target produces the same result. Running it twice on an initialized target is a no-op (after reporting current state).
-5. **Detect-before-write.** Step 1 is mandatory and read-only. If the target already has the 4-piece set in working order, the skill reports "already initialized" and exits without writing anything.
+1. **永不 `rm`、`unlink`、`mv` 或以其他方式删除已存在的文件。** 技能没有卸载路径。如果用户要求删除已装文件，拒绝并指向手动清理。
+2. **未经逐文件明确同意，永不覆盖已存在的文件。** "初始化我的项目"不构成覆盖现有 `AGENTS.md` 的同意。每次覆盖需要单独的确认。
+3. **默认只做加法。** 新文件可以；替换需要同意；删除禁止。
+4. **幂等：重跑技能是安全的。** 在干净目标上跑两次产生相同结果。在已初始化目标上跑两次是无操作（先报告当前状态）。
+5. **写前探测。** 第 1 步是强制的且只读。如果目标已经有 4 件套在工作状态，技能报告"已初始化"并退出，不写任何东西。
 
-## When to use this skill
+## 何时使用本技能
 
-**Use it when:**
+**用它的场景：**
 
-- User explicitly asks to "letmbootstrap init", "bootstrap letmbootstrap", "init methodology", "搭三件套", "初始化方法论"
-- User asks to apply the letmbootstrap template to a project
-- User asks "set up this project for Agent collaboration"
+- 用户明确要求 "letmbootstrap init"、"bootstrap letmbootstrap"、"init methodology"、"搭三件套"、"初始化方法论"
+- 用户要求把 letmbootstrap 模板套到项目上
+- 用户说"为 Agent 协作设置这个项目"
 
-**Don't use it when:**
+**不用的场景：**
 
-- Target project already has AGENTS.md and docs/decisions/ — instead, point the user to the existing files
-- User wants only one piece (e.g., just AGENTS.md) — ask whether to install the full set
-- User is asking about the methodology itself — point them to `docs/methodology.md`
-- User wants to **install the letmbootstrap skill itself** into a different Agent platform — point them at `INSTALL.md`
+- 目标项目已经有 AGENTS.md 和 docs/decisions/ —— 改为指向用户的现有文件
+- 用户只要其中一件（例如只要 AGENTS.md）—— 问是否装全套
+- 用户在问方法论本身 —— 指向 `docs/methodology.md`
+- 用户想把 **letmbootstrap 技能本身** 装到别的 Agent 平台 —— 指向 `INSTALL.md`
 
-## Inputs
+## 输入
 
-- `target_dir` (required): absolute path to the project root. Default: current working directory if it looks like a project root.
-- `project_meta` (gathered from user): see Step 2 below.
+- `target_dir`（必需）：项目根的绝对路径。默认：当前工作目录，如果它看起来像项目根。
+- `project_meta`（从用户收集）：见下面第 2 步。
 
-If the user did not specify a target directory, default to the current working directory **only if** it contains a project marker (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `README.md`, `.git/`, etc.). Otherwise ask.
+如果用户没指定目标目录，**仅当** 它包含项目标记（`package.json`、`pyproject.toml`、`Cargo.toml`、`go.mod`、`README.md`、`.git/` 等）时，默认当前工作目录。否则问。
 
-## Process
+## 流程
 
-### Step 1: Pre-flight check (read-only)
+### 第 1 步：预检（只读）
 
-Before any write:
+写任何东西之前：
 
-1. **Verify target_dir exists and is writable.**
-2. **Detect current state:**
+1. **验证 target_dir 存在且可写。**
+2. **检测当前状态：**
    ```bash
-   ls -la <target_dir>/AGENTS.md              # already has constitution?
-   ls <target_dir>/docs/decisions/ 2>/dev/null # already has decision log?
+   ls -la <target_dir>/AGENTS.md              # 已经有宪法？
+   ls <target_dir>/docs/decisions/ 2>/dev/null # 已经有决策日志？
    ls <target_dir>/skills/ <target_dir>/.agent-skills/ <target_dir>/.claude/skills/ 2>/dev/null
    ```
-3. **If all three pieces exist and look intentional** → tell the user "this project is already initialized" and stop. Don't overwrite.
-4. **If some pieces exist** → ask the user before overwriting each one. Default behavior is to leave existing files alone (additive only).
-5. **If nothing exists** → proceed to Step 2.
+3. **如果三件都存在且看着是刻意的** → 告诉用户"这个项目已经初始化"并停止。不覆盖。
+4. **如果部分存在** → 覆盖每个之前问用户。默认行为是保留已有文件不动（只做加法）。
+5. **如果什么都不存在** → 进入第 2 步。
 
-This step is read-only. No `rm`, no `mv`, no writes.
+本步只读。无 `rm`、无 `mv`、无写。
 
-### Step 2: Gather project metadata
+### 第 2 步：收集项目元数据
 
-Ask the user 5 short questions. Keep them concise; use the question UI, not a long paragraph.
+问用户 5 个简短问题。保持简洁；用问题 UI，不要长段。
 
-1. **What's the project's one-line purpose?** (verb + noun + audience)
-   - Example: "A CLI that converts markdown to Notion pages."
-2. **What's the stack?** (language, runtime, framework, package manager, test runner)
-   - Example: "TypeScript 5 / Node 22 / Hono / pnpm / vitest"
-3. **What must this project NOT do?** (2-4 anti-goals)
-   - Example: "No web UI. No multi-user auth. No cloud sync."
-4. **Where does new code go?** (extension map; if user is unsure, propose a default based on the stack and ask for confirmation)
-5. **Are there existing docs to link from AGENTS.md?** (README, architecture doc, contributing guide)
+1. **项目的一句话目的是什么？**（动词 + 名词 + 受众）
+   - 示例："一个把 markdown 转 Notion 页面的 CLI。"
+2. **技术栈是什么？**（语言、运行时、框架、包管理器、测试运行器）
+   - 示例："TypeScript 5 / Node 22 / Hono / pnpm / vitest"
+3. **本项目 **不能** 做什么？**（2-4 个反目标）
+   - 示例："不要 web UI。不要多用户鉴权。不要云同步。"
+4. **新代码放哪？**（扩展图；如果用户不确定，按技术栈给默认并请确认）
+5. **有现成的文档要从 AGENTS.md 链吗？**（README、架构文档、贡献指南）
 
-If the user says "I don't know" or "you decide" on any question, propose sensible defaults and ask for confirmation.
+如果用户说"我不知道"或"你定"，给合理默认并请确认。
 
-### Step 3: Preview what will be written
+### 第 3 步：预览要写什么
 
-Before writing anything, show the user a preview that makes the non-destructive guarantee explicit:
+写之前，给用户看预览，把非破坏性保证说清楚：
 
 ```
-Will CREATE (additive, safe to re-run):
-  <target_dir>/AGENTS.md                            (~30 lines, customized)
-  <target_dir>/docs/decisions/                      (directory)
-  <target_dir>/docs/decisions/0001-bootstrap.md     (initial decision)
-  <target_dir>/docs/decisions/README.md             (decision format guide)
-  <target_dir>/.agent-skills/                       (or skills/ — ask user)
-  <target_dir>/.agent-skills/README.md              (links back to letmbootstrap)
-  <target_dir>/.agent-skills/single-task-contract.md (task contract template)
+将创建（加法式，可重跑）：
+  <target_dir>/AGENTS.md                            (~30 行，已定制)
+  <target_dir>/docs/decisions/                      (目录)
+  <target_dir>/docs/decisions/0001-bootstrap.md     (初始决策)
+  <target_dir>/docs/decisions/README.md             (决策格式指南)
+  <target_dir>/.agent-skills/                       (或 skills/ — 问用户)
+  <target_dir>/.agent-skills/README.md              (链回 letmbootstrap)
+  <target_dir>/.agent-skills/single-task-contract.md (任务契约模板)
 
-Will NOT touch:
-  <list of existing files that won't be modified>
+不会动：
+  <不会被改的现有文件清单>
 
-Will NOT do (no matter what):
-  - rm / unlink / mv of any existing file
-  - overwrite without per-file consent
-  - touch anything outside <target_dir>
+不会做（无论如何都不做）：
+  - rm / unlink / mv 任何现有文件
+  - 未经逐文件同意覆盖
+  - 动 <target_dir> 外面的任何东西
 ```
 
-Ask the user: "Proceed with this bootstrap?" Use the question UI with explicit confirmation. **Do not proceed without explicit confirmation.**
+问用户："继续这次引导吗？" 用问题 UI + 明确确认。**没有明确确认不继续。**
 
-If the user requests a different skills directory name (`skills/` instead of `.agent-skills/`, or `.claude/skills/`), respect that choice.
+如果用户要求不同的 skills 目录名（`skills/` 而不是 `.agent-skills/`，或 `.claude/skills/`），尊重选择。
 
-### Step 4: Write the files (additive only)
+### 第 4 步：写文件（只加法）
 
-Order matters — each subsequent file may reference earlier ones.
+顺序重要 —— 后续文件可能引用前面的。
 
-1. **`AGENTS.md`** at `<target_dir>/AGENTS.md`:
-   - Read template: `templates/AGENTS.md.template` from the letmbootstrap repo
-   - Substitute: project name, stack, anti-goals, extension map, doc links
-   - Keep it ≤ 200 lines — if it grows, push detail into `docs/`
-   - **If `<target_dir>/AGENTS.md` already exists, stop and ask for consent.** Do not overwrite silently.
+1. **`AGENTS.md`** 在 `<target_dir>/AGENTS.md`：
+   - 读模板：`templates/AGENTS.md.template` 从 letmbootstrap 仓库
+   - 替换：项目名、技术栈、反目标、扩展图、文档链接
+   - 保持 ≤ 200 行 —— 超过就把细节推 `docs/`
+   - **如果 `<target_dir>/AGENTS.md` 已存在，停下问同意。** 不默默覆盖。
 
-2. **`docs/decisions/README.md`** at `<target_dir>/docs/decisions/README.md`:
-   - Brief explanation of the decision log format
-   - Copy content from `docs/methodology.md` "## Decision lifecycle" section
-   - Link back to the letmbootstrap repo
-   - **If `<target_dir>/docs/decisions/README.md` already exists, skip and report.** Do not overwrite.
+2. **`docs/decisions/README.md`** 在 `<target_dir>/docs/decisions/README.md`：
+   - 简短解释决策日志格式
+   - 复制 `docs/methodology.md` "决策生命周期"那节内容
+   - 链回 letmbootstrap 仓库
+   - **如果 `<target_dir>/docs/decisions/README.md` 已存在，跳过并报告。** 不覆盖。
 
-3. **`docs/decisions/0001-bootstrap-with-letmbootstrap.md`**:
-   - Read template: `templates/decision.md.template`
-   - Fill in:
-     - **Context:** the project is adopting letmbootstrap methodology
-     - **Decision:** install the 4-piece set
-     - **Consequences:** project follows letmbootstrap anti-drift discipline
-     - **Alternatives considered:** ad-hoc decisions, no methodology, status quo
-   - **If a file with this name already exists, append a numeric suffix (0002, 0003, …) instead of overwriting.**
+3. **`docs/decisions/0001-bootstrap-with-letmbootstrap.md`**：
+   - 读模板：`templates/decision.md.template`
+   - 填写：
+     - **背景：** 项目正在采用 letmbootstrap 方法论
+     - **决策：** 安装 4 件套
+     - **影响：** 项目遵循 letmbootstrap 防跑偏纪律
+     - **考虑过的方案：** 临时决策、不要方法论、保持现状
+   - **如果同名文件已存在，加数字后缀（0002、0003、…）而不是覆盖。**
 
-4. **Skills directory** at `<target_dir>/.agent-skills/` (or user's preferred name):
-   - **`README.md`** — explains the directory, links back to letmbootstrap, mentions the single-task contract
-   - **`single-task-contract.md`** — copy of `templates/single-task-contract.md`
-   - Optionally add a `pre-commit-checks.md` if the user has a stack with known gates (TypeScript → typecheck + lint; Python → ruff + pytest; etc.)
-   - **If the skills directory already exists, copy files in but skip any that already exist.** Do not overwrite.
+4. **Skills 目录** 在 `<target_dir>/.agent-skills/`（或用户选的名字）：
+   - **`README.md`** — 解释目录、链回 letmbootstrap、提单任务契约
+   - **`single-task-contract.md`** — 复制 `templates/single-task-contract.md`
+   - 可选地加 `pre-commit-checks.md` 如果用户的技术栈有已知闸门（TypeScript → typecheck + lint；Python → ruff + pytest；等）
+   - **如果 skills 目录已存在，拷文件进来但跳过任何已存在的。** 不覆盖。
 
-### Step 5: Verify and report
+### 第 5 步：验证和报告
 
-After all files are written:
+所有文件写完后：
 
-1. Run `ls -laR <target_dir>/AGENTS.md <target_dir>/docs/ <target_dir>/.agent-skills/` (or chosen skills dir) and confirm the structure.
-2. Show the user a tree of what was created.
-3. Show the customized `AGENTS.md` content so they can review.
-4. Remind them: "Next time you give the Agent a non-trivial task, fill the single-task contract first."
+1. 跑 `ls -laR <target_dir>/AGENTS.md <target_dir>/docs/ <target_dir>/.agent-skills/`（或选的 skills 目录）确认结构。
+2. 给用户看创建出来的树。
+3. 给用户看已定制的 `AGENTS.md` 内容方便 review。
+4. 提醒他们："下次给 Agent 非平凡任务前，先填单任务契约。"
 
-## Stop conditions
+## 停止条件
 
-Abort cleanly if any of the following:
+以下情况干净中止：
 
-- User declines the preview
-- Target directory is not writable
-- Existing files would be overwritten without explicit consent
-- User says "stop" or "not now" at any step
-- User asks to delete or remove any existing file — refuse and explain why
+- 用户拒绝预览
+- 目标目录不可写
+- 现有文件未经明确同意会被覆盖
+- 用户在任何步骤说"停"或"先不要"
+- 用户要求删除或移除任何现有文件 —— 拒绝并解释为什么
 
-## Acceptance criteria
+## 完成标准
 
-The bootstrap is complete when:
+引导完成当：
 
-- `AGENTS.md` exists at the target root, customized to the project, ≤ 200 lines
-- `docs/decisions/` contains `README.md` + `0001-bootstrap-with-letmbootstrap.md` (or next available number)
-- Skills directory exists with `README.md` + `single-task-contract.md`
-- User has reviewed each created file and confirmed
-- No existing files were modified or deleted, period
+- `AGENTS.md` 存在于目标根，已为项目定制，≤ 200 行
+- `docs/decisions/` 含 `README.md` + `0001-bootstrap-with-letmbootstrap.md`（或下一个可用编号）
+- skills 目录存在含 `README.md` + `single-task-contract.md`
+- 用户 review 过每个创建的文件并确认
+- 没有任何现有文件被修改或删除
 
-## Failure handling
+## 失败处理
 
-If a file write fails:
+写文件失败时：
 
-1. Report the exact error and the file path.
-2. Suggest the fix (permissions, parent dir, etc.).
-3. Don't silently retry — the user may need to intervene.
+1. 报告准确错误和文件路径。
+2. 建议修复方法（权限、父目录等）。
+3. 不默默重试 —— 用户可能要介入。
 
-If the customization produces an awkward `AGENTS.md` (e.g., user gave very vague answers), surface that and offer to refine. Don't ship a generic-looking constitution.
+定制产出尴尬的 `AGENTS.md`（例如用户给了很模糊的答案），摆出来并提议精炼。不要交付看起来千篇一律的宪法。
 
-If a user asks for an operation that would delete or overwrite an existing file:
+用户要求会删除或覆盖现有文件的操作时：
 
-1. Refuse clearly. Quote the non-destructive guarantee.
-2. Offer the closest safe alternative (e.g., "I can create a sibling file with a new name, or write the new content to a temporary file you can review").
-3. Do not attempt the operation, even if the user insists, until they re-confirm with full understanding that the skill explicitly does not support deletion.
+1. 明确拒绝。引用非破坏性保证。
+2. 提供最接近的安全替代（"我可以新建一个同目录不同名的文件，或把新内容写到临时文件给你 review"）。
+3. 不尝试该操作，即使用户坚持，直到他们重新确认且完全理解技能明确不支持删除。
 
-## Post-bootstrap reminder (give to user)
+## 引导后提醒（告诉用户）
 
-After success, tell the user:
+成功后告诉用户：
 
-> **Daily reminder:** every time you give the Agent a non-trivial task, fill a single-task contract first (`.agent-skills/single-task-contract.md`). It's 30 seconds of typing and saves ~30 minutes of re-orientation per task.
+> **每日提醒：** 每次给 Agent 非平凡任务前，先填单任务契约（`.agent-skills/single-task-contract.md`）。30 秒打字，平均每次任务节省 ~30 分钟重新定向。
 >
-> **Weekly reminder:** when you make a non-trivial decision (anything you'll need to re-decide later), write a decision note (`docs/decisions/NNNN-<title>.md`). It's the only way the Agent will know not to re-litigate it.
+> **每周提醒：** 做非平凡决策时（任何你以后还要重决策的事），写一条决策记录（`docs/decisions/NNNN-<标题>.md`）。这是 Agent 知道不重新争论的唯一方式。
 >
-> **Re-running is safe.** You can run the skill again later to add pieces you skipped. It will not delete or overwrite anything without explicit consent.
+> **重跑是安全的。** 你可以以后再跑技能补上跳过的部分。它不会删除或覆盖任何东西，除非明确同意。

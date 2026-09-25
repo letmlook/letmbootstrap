@@ -1,123 +1,125 @@
-# INSTALL — put the letmbootstrap skill on your Agent
+<!-- 语言：中文（默认） | English mirror: INSTALL.en.md -->
 
-> **One-page guide.** Want details? See [`docs/installation-guide.md`](docs/installation-guide.md). Want to know which platforms are supported? See [`docs/agent-compatibility.md`](docs/agent-compatibility.md).
+# INSTALL — 把 letmbootstrap 技能装到你的 Agent
 
-## What this installs
+> **一页指南。** 要细节？看 [`docs/installation-guide.md`](docs/installation-guide.md)。想知道哪些平台支持？看 [`docs/agent-compatibility.md`](docs/agent-compatibility.md)。
 
-This repo ships **one Agent skill** named `letmbootstrap`. Once installed, your Agent can invoke it on any project to scaffold the 4-piece anti-drift setup (`AGENTS.md` + `docs/decisions/` + `skills/` + single-task contract).
+## 这是什么
 
-The skill itself is **additive and non-destructive**. It never deletes or overwrites your files. Re-running the installer is always safe. There is no uninstall path on purpose.
+本仓库发布 **一个** 名为 `letmbootstrap` 的 Agent 技能。装好后，你的 Agent 可以在任何项目里调用它来搭建 4 件套防跑偏骨架（`AGENTS.md` + `docs/decisions/` + `skills/` + 单任务契约）。
 
-## Pick your Agent
+技能本身是 **附加式、非破坏性的**。它从不删除或覆盖你的文件。重跑安装器永远安全。刻意没有卸载入口。
 
-| Agent | Path | One-liner |
+## 选你的 Agent
+
+| Agent | 路径 | 一行命令 |
 |---|---|---|
-| **MiniMax Code / Mavis** | `~/.minimax/agents/<your-agent>/skills/` | see [§ Mavis](#minimax-code--mavis) |
-| **Claude Code** | `~/.claude/skills/` | see [§ Claude Code](#claude-code) |
-| **OpenAI Codex CLI** | `~/.codex/skills/` *(if available)* or symlink into a project | see [§ Codex](#openai-codex-cli) |
-| **Cursor** | `.cursor/skills/` *(per-project)* | see [§ Cursor](#cursor) |
-| **Gemini CLI** | `~/.gemini/skills/` | see [§ Gemini CLI](#gemini-cli) |
-| **Aider** | `.aider/skills/` *(per-project)* | see [§ Aider](#aider) |
-| **Devin** | `.devin/skills/` *(per-project)* | see [§ Devin](#devin) |
-| **OpenCode** | `.opencode/skills/` or `~/.config/opencode/skills/` | see [§ OpenCode](#opencode) |
+| **MiniMax Code / Mavis** | `~/.minimax/agents/<你的-agent>/skills/` | 看 [§ Mavis](#minimax-code--mavis) |
+| **Claude Code** | `~/.claude/skills/` | 看 [§ Claude Code](#claude-code) |
+| **OpenAI Codex CLI** | `~/.codex/skills/` *（如支持）* 或在项目里做软链 | 看 [§ Codex](#openai-codex-cli) |
+| **Cursor** | `.cursor/skills/` *（按项目）* | 看 [§ Cursor](#cursor) |
+| **Gemini CLI** | `~/.gemini/skills/` | 看 [§ Gemini CLI](#gemini-cli) |
+| **Aider** | `.aider/skills/` *（按项目）* | 看 [§ Aider](#aider) |
+| **Devin** | `.devin/skills/` *（按项目）* | 看 [§ Devin](#devin) |
+| **OpenCode** | `.opencode/skills/` 或 `~/.config/opencode/skills/` | 看 [§ OpenCode](#opencode) |
 
-> Not listed? Open an issue with your platform's skill path and we'll add a row. The skill itself is portable — only the install path differs.
+> 没列出来？开个 issue 告诉我们你的平台的技能路径，我们补一行。技能本身是可移植的 —— 只有安装路径不同。
 
-## Quick install (recommended)
+## 快速安装（推荐）
 
-The installer is **dry-run by default** — it prints what it would do and exits without writing anything. To actually install, pass `--apply`.
+安装器 **默认是 dry-run** —— 它会打印要做什么然后退出，不写任何东西。要实际安装，加 `--apply`。
 
 ```bash
-# from inside the letmbootstrap repo
+# 在 letmbootstrap 仓库目录下
 cd /Users/letmlook/code/letmbootstrap
 
-# 1. See what would happen on your machine
+# 1. 看会装到哪里
 ./scripts/install.sh
 
-# 2. Install globally for the detected platform(s)
+# 2. 装到所有检测到的平台
 ./scripts/install.sh --apply
 
-# 3. Install for a specific platform only
+# 3. 只装一个平台
 ./scripts/install.sh --apply --platform claude-code
 ./scripts/install.sh --apply --platform mavis
 ./scripts/install.sh --apply --platform codex
 
-# 4. Install into a specific Agent name (Mavis only)
+# 4. 装到指定 Agent（仅 Mavis）
 ./scripts/install.sh --apply --platform mavis --agent-name my-dev-agent
 
-# 5. Symlink instead of copy (picks up repo edits automatically)
+# 5. 用软链而不是复制（仓库改动自动生效）
 ./scripts/install.sh --apply --symlink
 ```
 
-The installer:
+安装器：
 
-- ✅ Detects which platforms exist on your machine
-- ✅ Copies `skills/letmbootstrap/` into the right location
-- ✅ Skips any existing installation (no overwrites, no deletes)
-- ✅ Reports skipped locations so you can investigate
-- ❌ Never runs `rm`, `unlink`, or anything destructive
-- ❌ Never overwrites an existing skill
+- ✅ 自动检测你机器上有哪些平台
+- ✅ 把 `skills/letmbootstrap/` 复制到正确位置
+- ✅ 跳过已存在的安装（不覆盖、不删除）
+- ✅ 报告被跳过的位置以便排查
+- ❌ 永远不跑 `rm`、`unlink` 或任何破坏性命令
+- ❌ 永远不覆盖已存在的技能
 
-## Manual install (no script)
+## 手动安装（不跑脚本）
 
-If you'd rather do it by hand:
+如果你想手动操作：
 
 ### MiniMax Code / Mavis
 
 ```bash
-# Pick which Agent should host the skill (e.g., your default dev agent)
-AGENT_DIR="$HOME/.minimax/agents/<your-agent-name>/skills"
+# 挑一个 Agent 来承载技能（比如你的默认开发 Agent）
+AGENT_DIR="$HOME/.minimax/agents/<你的-agent-名>/skills"
 
 mkdir -p "$AGENT_DIR"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$AGENT_DIR/"
 
-# Verify
+# 验证
 ls "$AGENT_DIR/letmbootstrap/SKILL.md"
 ```
 
-Reload the Agent session so it picks up the new skill. Trigger it with: "letmbootstrap init" or "搭三件套".
+重载 Agent 会话以加载新技能。触发短语："letmbootstrap init" 或 "搭三件套"。
 
 ### Claude Code
 
 ```bash
-# Global install — applies to every Claude Code session
+# 全局安装 — 作用于所有 Claude Code 会话
 mkdir -p "$HOME/.claude/skills"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.claude/skills/"
 
-# Verify
+# 验证
 ls "$HOME/.claude/skills/letmbootstrap/SKILL.md"
 ```
 
-Restart Claude Code. Trigger it with: "letmbootstrap init".
+重启 Claude Code。触发短语："letmbootstrap init"。
 
 ### OpenAI Codex CLI
 
-Codex CLI's skill support depends on your version. Two options:
+Codex CLI 的技能支持取决于你的版本。两种方式：
 
 ```bash
-# Option A: per-project (most reliable)
-cd <your-project>
+# 方式 A：按项目（最稳）
+cd <你的项目>
 mkdir -p .agent-skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .agent-skills/
-# Then point Codex at it via AGENTS.md or config — see docs/installation-guide.md
+# 然后在 AGENTS.md 或配置里指向它 — 见 docs/installation-guide.md
 
-# Option B: global, if your Codex version supports ~/.codex/skills/
+# 方式 B：全局，如果你的 Codex 版本支持 ~/.codex/skills/
 mkdir -p "$HOME/.codex/skills"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.codex/skills/"
 ```
 
-If Codex doesn't yet load external skills on your version, fall back to inline-invocation: paste the skill body into chat and say "follow this procedure".
+如果你的 Codex 版本还不支持外部技能，回退到"调用时粘贴"：把技能正文粘到对话里并说"按这个流程执行"。
 
 ### Cursor
 
 ```bash
-# Per-project only — Cursor doesn't have a global skills dir
-cd <your-project>
+# 只能按项目 — Cursor 没有全局技能目录
+cd <你的项目>
 mkdir -p .cursor/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .cursor/skills/
 ```
 
-Cursor picks up `.cursor/skills/` from the project root. Restart the session.
+Cursor 从项目根目录的 `.cursor/skills/` 读技能。重启会话。
 
 ### Gemini CLI
 
@@ -128,82 +130,83 @@ cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.gemini/ski
 
 ### Aider
 
-Aider has no native skills directory. Two options:
+Aider 没有原生技能目录。两种方式：
 
 ```bash
-# Option A: per-project convention file
-cd <your-project>
+# 方式 A：按项目约定文件
+cd <你的项目>
 mkdir -p .aider/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .aider/skills/
-# Then add to .aider/conventions.md or .aider/README.md:
-# "When asked to 'letmbootstrap init', read .aider/skills/letmbootstrap/SKILL.md"
+# 然后加到 .aider/conventions.md：
+# "当被要求 'letmbootstrap init' / '搭三件套' / 'init methodology' 时，
+#  读 .aider/skills/letmbootstrap/SKILL.md 并严格按其流程执行。"
 
-# Option B: paste-on-invoke — copy the SKILL.md body into chat when needed.
+# 方式 B：调用时粘贴 — 需要时把 SKILL.md 粘到对话里
 ```
 
 ### Devin
 
 ```bash
-# Per-project
-cd <your-project>
+# 按项目
+cd <你的项目>
 mkdir -p .devin/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .devin/skills/
 ```
 
-Devin reads `.devin/` files per session. Reference the skill path in the session prompt.
+Devin 按会话读 `.devin/` 下的文件。在会话提示里引用技能路径。
 
 ### OpenCode
 
 ```bash
-# Per-project (preferred for OpenCode)
-cd <your-project>
+# 按项目（推荐用于 OpenCode）
+cd <你的项目>
 mkdir -p .opencode/skills
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap .opencode/skills/
 
-# OR global
+# 或全局
 mkdir -p "$HOME/.config/opencode/skills"
 cp -R /Users/letmlook/code/letmbootstrap/skills/letmbootstrap "$HOME/.config/opencode/skills/"
 ```
 
-## Verify it worked
+## 验证是否成功
 
-After install, ask your Agent any of:
+装好后，对 Agent 说以下任一句：
 
-- "letmbootstrap init" (English)
-- "搭三件套" (Chinese)
-- "initialize methodology"
+- "letmbootstrap init"
+- "搭三件套"
+- "初始化方法论"
 - "bootstrap letmbootstrap"
 
-If the skill is installed correctly, the Agent will recognize the trigger phrase and begin the guided setup flow without you having to paste the SKILL.md body.
+如果技能装对了，Agent 会识别触发短语并按引导流程走，不需要你再贴 SKILL.md 正文。
 
-## What if I want to remove it later?
+## 如果以后想移除？
 
-This installer does not provide an uninstall command. That's intentional — see [`docs/decisions/0001-keep-skill-non-destructive.md`](docs/decisions/0001-keep-skill-non-destructive.md) for the rationale.
+本安装器不提供卸载命令。这是刻意的设计 —— 见 [`docs/decisions/0001-keep-skill-non-destructive.md`](docs/decisions/0001-keep-skill-non-destructive.md) 的理由。
 
-To remove manually:
+要手动移除：
 
 ```bash
-# Just delete the installed copy. The installer never touched anything else.
+# 直接删除安装的副本。安装器没动过其他任何东西。
 rm -rf "$HOME/.claude/skills/letmbootstrap"
-# (or whatever path you installed to)
+# （或你装到的任何路径）
 ```
 
-This is something **you** do, not something the skill does.
+这是 **你自己** 做的事，不是技能做的事。
 
-## Updating the skill
+## 更新技能
 
-The installer is safe to re-run. It skips existing installations, so to pull in upstream changes:
+安装器可以安全重跑。它跳过已存在的安装，所以要更新就：
 
 ```bash
-# 1. Pull the latest letmbootstrap repo
+# 1. 拉最新的 letmbootstrap 仓库
 cd /Users/letmlook/code/letmbootstrap && git pull
 
-# 2. Manually replace the installed copy with the new one
+# 2. 手动把安装的副本替换成新版本
 cp -R skills/letmbootstrap "$HOME/.claude/skills/letmbootstrap"
 ```
 
-Or, for development, install once with `--symlink` so every repo edit is picked up live (no re-install needed).
+或者开发期用 `--symlink`，仓库改动自动生效，不用重装。
 
-## Next step
+## 下一步
 
-After the skill is installed, you use it by saying one of the trigger phrases inside a project directory. The skill will guide the rest. See [`docs/methodology.md`](docs/methodology.md) for the full narrative.
+技能装好后，在项目目录里说一句触发短语即可。技能会引导剩下的步骤。完整叙事见 [`docs/methodology.md`](docs/methodology.md)。

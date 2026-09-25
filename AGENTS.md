@@ -1,76 +1,78 @@
-# AGENTS.md — letmbootstrap template
+<!-- 语言：中文（默认） | English mirror: AGENTS.en.md -->
 
-> This file dogfoods the methodology: it IS the 30-line constitution for this template repo.
+# AGENTS.md — letmbootstrap 模板
 
-## Project is
+> 本文件 dogfood 方法论本身：它就是本模板仓库的 30 行宪法。
 
-A reusable collaboration methodology template for solo + Agent iterative development. It packages the 4-piece anti-drift setup + bootstrap skill so a new project can adopt the discipline in ~10 minutes.
+## Project is（项目是什么）
 
-## Stack
+一套可复用的协作方法论模板，专为单人 + Agent 迭代式开发设计。把 4 件套防跑偏骨架 + 引导技能打包在一起，让新项目 ~10 分钟就能采纳这套纪律。
 
-Markdown / shell / Agent SKILL.md. No runtime. No build.
+## Stack（技术栈）
 
-## Project is NOT
+Markdown / shell / Agent SKILL.md。无运行时。无构建。
 
-- Not a runtime framework, not a CLI, not a library — just docs + templates + a skill.
-- Not coupled to any specific language or framework.
-- Not a "methodology encyclopedia" — keep each artifact short and opinionated.
-- Not a skill marketplace — we don't publish to one by design.
+## Project is NOT（项目不是什么）
 
-## Required reading (in order)
+- 不是运行时框架，不是 CLI，不是库 —— 只是文档 + 模板 + 技能。
+- 不绑定任何特定语言或框架。
+- 不是"方法论百科全书" —— 每个制品都要短且有立场。
+- 不上技能市场 —— 刻意不发。
 
-1. `README.md` — what's in here and why
-2. `INSTALL.md` — how to put the letmbootstrap skill on your Agent
-3. `ARCHITECTURE.md` — five-layer architecture overview
-4. `docs/methodology.md` — the full narrative
-5. `docs/installation-guide.md` — per-platform install steps + troubleshooting
-6. `docs/agent-compatibility.md` — which Agents can run the skill
-7. `docs/skills-catalog.md` — catalog of shipped skills + how to write more
-8. `FAQ.md` / `GLOSSARY.md` — quick reference
-9. `templates/` — the three templates to copy (see `templates/README.md`)
-10. `skills/letmbootstrap/SKILL.md` — the bootstrap skill
-11. `scripts/install.sh` — non-destructive installer (read the static guard)
+## Required reading (in order)（必读，按顺序）
 
-## Where new things go
+1. `README.md` — 仓库里有什么、为什么
+2. `INSTALL.md` — 怎么把 letmbootstrap 技能装到你的 Agent
+3. `ARCHITECTURE.md` — 五层架构总览
+4. `docs/methodology.md` — 完整叙事
+5. `docs/installation-guide.md` — 各平台详细安装步骤 + 故障排查
+6. `docs/agent-compatibility.md` — 哪些 Agent 能跑这个技能
+7. `docs/skills-catalog.md` — 已发布的技能 + 如何添加更多
+8. `FAQ.md` / `GLOSSARY.md` — 速查
+9. `templates/` — 三个可复制模板（见 `templates/README.md`）
+10. `skills/letmbootstrap/SKILL.md` — 引导技能
+11. `scripts/install.sh` — 非破坏性安装器（读静态守卫）
 
-| Goal | Location |
+## Where new things go（新东西放哪）
+
+| 目标 | 位置 |
 |---|---|
-| Add a new template | `templates/<name>.template` |
-| Add a new skill | `skills/<skill-name>/SKILL.md` |
-| Add a methodology rule | `docs/methodology.md` (update narrative, keep ≤ 1500 words) |
-| Add an example | `examples/<project-name>/` (small, complete) |
-| Add a decision record | `docs/decisions/NNNN-<short>.md` |
-| Add an install script | `scripts/<name>.sh` (non-destructive by default) |
-| Add a per-platform install path | edit `scripts/install.sh` detector + add row to `docs/agent-compatibility.md` |
-| Add an FAQ entry | `FAQ.md` + mirror to `docs/faq.md` |
-| Add a glossary entry | `GLOSSARY.md` + mirror to `docs/glossary.md` |
-| Tweak the constitution | this file (≤ 80 lines) |
+| 加新模板 | `templates/<名>.template` |
+| 加新技能 | `skills/<技能名>/SKILL.md` |
+| 加方法论规则 | `docs/methodology.md`（更新叙事，≤ 1500 字） |
+| 加示例 | `examples/<项目名>/`（小巧、完整） |
+| 加决策记录 | `docs/decisions/NNNN-<短>.md` |
+| 加安装脚本 | `scripts/<名>.sh`（默认非破坏性） |
+| 加新平台安装路径 | 编辑 `scripts/install.sh` 检测器 + 在 `docs/agent-compatibility.md` 加一行 |
+| 加 FAQ 条目 | `FAQ.md` + 镜像到 `FAQ.en.md` |
+| 加术语条目 | `GLOSSARY.md` + 镜像到 `GLOSSARY.en.md` |
+| 调整宪法 | 本文件（≤ 80 行） |
 
-## Definition of Done (per change)
+## Definition of Done（每次变更的完成标准）
 
-- [ ] Each new template has ≥ 1 example in `examples/`
-- [ ] Each new skill has a clear `description:` frontmatter trigger
-- [ ] `docs/methodology.md` narrative still readable end-to-end (≤ 1500 words)
-- [ ] README's "Quick start" still accurate
-- [ ] INSTALL.md still accurate if install flow changed
-- [ ] `./scripts/install.sh --help` still works
-- [ ] `./scripts/install.sh` (dry-run, no flags) reports no errors
-- [ ] No new destructive ops in `scripts/` (no `rm`, `unlink`, `mv`, `rmdir` in non-comment lines)
-- [ ] If `FAQ.md` or `GLOSSARY.md` changed, mirror to `docs/faq.md` / `docs/glossary.md`
+- [ ] 每个新模板在 `examples/` 下有 ≥ 1 个示例
+- [ ] 每个新技能有清晰的 `description:` frontmatter 触发
+- [ ] `docs/methodology.md` 叙事从头到尾可读（≤ 1500 字）
+- [ ] README 的"快速上手"仍然准确
+- [ ] INSTALL.md 在安装流程变更后仍然准确
+- [ ] `./scripts/install.sh --help` 仍然可用
+- [ ] `./scripts/install.sh`（干跑，无标志）无报错
+- [ ] `scripts/` 下无新破坏性操作（非注释行无 `rm`、`unlink`、`mv`、`rmdir`）
+- [ ] 如改 `FAQ.md` 或 `GLOSSARY.md`，镜像到 `FAQ.en.md` / `GLOSSARY.en.md`
 
-## Forbidden
+## Forbidden（禁区）
 
-- Don't grow this into a meta-methodology framework.
-- Don't add templates for things not yet used by a real project.
-- Don't write "philosophy" without concrete steps.
-- Don't add destructive operations to `scripts/install.sh` — the static guard at the top of the file is binding (see `docs/decisions/0001-keep-skill-non-destructive.md`).
-- Don't ship an `uninstall` subcommand or `--force`/`--reset` flag in any install script. Users do destructive ops themselves.
-- Don't publish to skill marketplaces. Install is always direct from this repo.
+- 不要膨胀成"元方法论框架"。
+- 不要为真实项目还没用到的东西加模板。
+- 不要写没有具体步骤的"哲学"。
+- 不要给 `scripts/install.sh` 加破坏性操作 —— 顶部的静态守卫是绑定的（见 `docs/decisions/0001-keep-skill-non-destructive.md`）。
+- 不要在任何安装脚本里发 `uninstall` 子命令或 `--force` / `--reset` 标志。破坏性操作由用户自己执行。
+- 不要发到技能市场。安装一律直接来自本仓库。
 
-## Decisions
+## Decisions（决策）
 
-Before adding any new convention, check `docs/decisions/`. If addressed, follow it. If you want to change it, write a new decision file — don't argue in PR comments.
+添加任何新约定前，先查 `docs/decisions/`。如果已有，跟着走；如果要改，**写一条新决策文件** —— 不要在 PR 评论里争论。
 
-## Tasks
+## Tasks（任务）
 
-Before any non-trivial change, fill a single-task contract (see `templates/single-task-contract.md`).
+任何非平凡变更前，先填一份单任务契约（见 `templates/single-task-contract.md`）。

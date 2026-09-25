@@ -1,145 +1,147 @@
-# Skills catalog
+<!-- 语言：中文（默认） | English mirror: docs/skills-catalog.en.md -->
 
-The repo currently ships one skill. This page documents that skill and explains how to write more.
+# 技能目录
 
-## Shipped skills
+仓库当前发一个技能。本页记录那个技能，并解释怎么写更多。
 
-### `letmbootstrap` — bootstrap the methodology into a target project
+## 已发布的技能
 
-**Trigger phrases:** `letmbootstrap init`, `bootstrap letmbootstrap`, `init methodology`, `搭三件套`, `初始化方法论`, `letmbootstrap 初始化`.
+### `letmbootstrap` — 在目标项目里引导方法论
 
-**What it does:** installs `AGENTS.md` + `docs/decisions/` + `skills/` scaffolding into a target project, customized via 5 questions, with explicit consent before any write.
+**触发短语：** `letmbootstrap init`、`bootstrap letmbootstrap`、`init methodology`、`搭三件套`、`初始化方法论`、`letmbootstrap 初始化`。
 
-**When to invoke:** when starting a new project or retrofitting an existing one that doesn't yet have the 4-piece anti-drift setup.
+**作用：** 在目标项目里安装 `AGENTS.md` + `docs/decisions/` + `skills/` 骨架，按 5 个问题定制，写之前都要明确同意。
 
-**When NOT to invoke:** the target already has AGENTS.md and docs/decisions/. Or the user wants to install the letmbootstrap skill itself onto a different Agent platform — that's `INSTALL.md`, not this skill.
+**何时调用：** 启动新项目，或改造现有项目且还没有 4 件套防跑偏骨架时。
 
-**File:** [`skills/letmbootstrap/SKILL.md`](../skills/letmbootstrap/SKILL.md)
+**何时不调用：** 目标已经有 AGENTS.md 和 docs/decisions/。或者用户想把 letmbootstrap 技能本身装到别的 Agent 平台 —— 那是 `INSTALL.md`，不是这个技能。
 
-**Guarantees:**
+**文件：** [`skills/letmbootstrap/SKILL.md`](../skills/letmbootstrap/SKILL.md)
 
-- Never `rm`, `unlink`, `mv`, or overwrite without per-file explicit consent
-- Skip-on-conflict
-- Idempotent
-- Read-only Step 1 (preflight)
+**保证：**
 
-**Anti-patterns to refuse:**
+- 永不 `rm`、`unlink`、`mv`，未经逐文件明确同意也不覆盖
+- 冲突跳过
+- 幂等
+- 只读的 Step 1（预检）
 
-- "Reset this project" — the skill has no reset path
-- "Force overwrite" — refused, must be per-file
-- "Uninstall" — refused, see decision 0001
+**要拒绝的反模式：**
+
+- "重置这个项目" — 技能没有重置路径
+- "强制覆盖" — 拒绝，必须逐文件
+- "卸载" — 拒绝，见决策 0001
 
 ---
 
-## How to write a new skill
+## 怎么写新技能
 
-A new skill is a new directory under `skills/<skill-name>/SKILL.md` with YAML frontmatter and a step-by-step procedure.
+新技能是 `skills/<技能名>/SKILL.md` 目录，带 YAML frontmatter 和逐步流程。
 
-### Frontmatter contract
+### Frontmatter 契约
 
 ```markdown
 ---
-name: <skill-name>
-description: Use when <specific trigger phrase> — <one-line summary>.
+name: <技能名>
+description: 当 <具体触发> 时使用 — <一句话总结>.
 ---
 ```
 
-The `description:` field is the **most important** part. It determines whether the Agent ever invokes the skill.
+`description:` 字段是 **最重要** 的部分。它决定 Agent 是否会调用这个技能。
 
-| Good description | Bad example |
+| 好的 description | 反例 |
 |---|---|
-| `Use when running pre-push checks before submitting a PR — runs the narrow test suite and linters that cover the diff.` | `Useful for code review.` |
-| `Use when the user says "letmbootstrap init" or asks to install the 4-piece anti-drift setup.` | `For bootstrap.` |
-| `Use when debugging a flaky test in this repo — runs 10x in isolation, quiesces, restores state.` | `For debugging.` |
+| `当 push 前跑 pre-push 检查时使用 — 跑覆盖当前 diff 的窄测试套件和 linter。` | `对代码审查有用。` |
+| `当用户说 "letmbootstrap init" 或要求安装 4 件套防跑偏骨架时使用。` | `用于 bootstrap。` |
+| `当排查本仓库的 flaky 测试时使用 — 隔离跑 10 次，静默，恢复状态。` | `用于 debug。` |
 
-The good examples have:
+好例子有：
 
-- A specific **trigger** ("running pre-push checks before submitting a PR")
-- A specific **action** ("runs the narrow test suite")
-- A specific **outcome** ("covers the diff")
+- 具体 **触发**（"push 前跑 pre-push 检查"）
+- 具体 **动作**（"跑窄测试套件"）
+- 具体 **结果**（"覆盖当前 diff"）
 
-The bad examples have none of these.
+反例这些都没有。
 
-### Body structure
+### 正文结构
 
-The body should follow this template:
+正文应按这个模板：
 
 ```markdown
-# <Skill Title>
+# <技能标题>
 
-<One-paragraph summary of what this skill does and why.>
+<一段话总结这个技能做什么、为什么。>
 
-## When to use this skill
+## 何时用这个技能
 
-**Use it when:**
-- <trigger condition>
+**用它的场景：**
+- <触发条件>
 
-**Don't use it when:**
-- <out-of-scope condition>
+**不用的场景：**
+- <范围外条件>
 
-## Hard rules — non-destructive by default
+## 硬规则 — 默认非破坏性
 
-1. Never rm / unlink / mv existing files.
-2. Never overwrite without per-file consent.
-3. Default to additive operations.
-4. Idempotent.
-5. Detect-before-write.
+1. 永不 rm / unlink / mv 已存在的文件。
+2. 未经逐文件同意永不覆盖。
+3. 默认只做加法。
+4. 幂等。
+5. 写前探测。
 
-## Inputs
+## 输入
 
-- `<input_name>` (required): <description>
+- `<输入名>`（必需）：<说明>
 
-## Process
+## 流程
 
-### Step 1: Pre-flight check (read-only)
+### 步骤 1：预检（只读）
 
-<bash commands>
+<bash 命令>
 
-### Step 2: <next step>
+### 步骤 2：<下一步>
 
-<procedure>
+<流程>
 
-## Stop conditions
+## 停止条件
 
-- <abort triggers>
+- <中止触发器>
 
-## Acceptance criteria
+## 完成标准
 
-- [ ] <observable>
-- [ ] <observable>
+- [ ] <可观察>
+- [ ] <可观察>
 
-## Failure handling
+## 失败处理
 
-<what to do when a step fails>
+<步骤失败时怎么做>
 
-## Post-skill reminder (give to user)
+## 技能后提醒（告诉用户）
 
-<what the user should remember after the skill runs>
+<技能跑完后用户该记什么>
 ```
 
-The template is not mandatory, but **Hard rules — non-destructive by default** is. Every new skill must include it as the second section, and it must contain the same five rules as the letmbootstrap skill. This is enforced by the [`docs/decisions/0001-keep-skill-non-destructive.md`](decisions/0001-keep-skill-non-destructive.md) decision.
+模板不强制，但 **"硬规则 — 默认非破坏性"** 是强制的。每个新技能都必须包含它，且必须含和 letmbootstrap 技能相同的 5 条规则。这由 [`docs/decisions/0001-keep-skill-non-destructive.md`](decisions/0001-keep-skill-non-destructive.md) 决策强制。
 
-### Examples of skills to write next
+### 下一步可写的技能示例
 
-These are candidates for future skills — but **don't write them until they're needed by a real project**:
+这些是未来技能的候选 —— 但 **在真实项目需要之前不要写**：
 
-- `pre-push-checks` — narrow test + lint selection before push
-- `code-review` — what to check in a PR for a given project
-- `debug-flaky-test` — isolation, quiescence, restoration
-- `release-checklist` — version bump, changelog, tags
-- `incident-postmortem` — what to write after an incident
-- `benchmark-regression` — detect and bisect perf regressions
+- `pre-push-checks` — push 前的窄测试 + lint 选择
+- `code-review` — 给定项目 PR 里检查什么
+- `debug-flaky-test` — 隔离、静默、恢复
+- `release-checklist` — 版本号、changelog、tag
+- `incident-postmortem` — 事件后写什么
+- `benchmark-regression` — 检测和二分性能回退
 
-The rule (per the AGENTS.md): don't add templates or skills for things not yet used by a real project. Wait for a real use case.
+规则（按 AGENTS.md）：不为真实项目还没用到的东西加模板或技能。等真实用例。
 
-## Adding a skill to this repo
+## 给本仓库加新技能
 
-1. Create `skills/<skill-name>/SKILL.md`.
-2. Add a row to the catalog above.
-3. If the skill needs an install path that doesn't exist yet, extend `scripts/install.sh` with a new platform detector (and update [`docs/agent-compatibility.md`](agent-compatibility.md)).
-4. Verify the frontmatter renders correctly: `head -5 skills/<skill-name>/SKILL.md` should show `name:` and `description:` on consecutive lines.
+1. 建 `skills/<技能名>/SKILL.md`。
+2. 在上面的目录加一行。
+3. 如果技能需要的安装路径还没有，在 `scripts/install.sh` 加新平台检测器（并更新 [`docs/agent-compatibility.md`](agent-compatibility.md)）。
+4. 验证 frontmatter 渲染正确：`head -5 skills/<技能名>/SKILL.md` 应该显示 `name:` 和 `description:` 在相连行。
 
-## What this catalog is not
+## 本目录不是
 
-- **Not a marketplace.** Skills in this repo are not published anywhere else.
-- **Not a registry.** The catalog only lists skills that ship from this repo. User-project skills live in the user project's own `skills/` directory and are not cataloged here.
+- **不是市场。** 本仓库里的技能不在别处发。
+- **不是注册中心。** 目录只列本仓库发的技能。用户项目的技能住在用户项目自己的 `skills/` 目录，不在目录里登记。

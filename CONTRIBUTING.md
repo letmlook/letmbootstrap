@@ -1,137 +1,136 @@
-# Contributing
+<!-- 语言：中文（默认） | English mirror: CONTRIBUTING.en.md -->
 
-Thanks for considering a contribution to letmbootstrap. This document covers how to send a PR that lands cleanly. The short version: **write a single-task contract for yourself first**, then send the PR. The longer version is below.
+# 贡献指南
+
+感谢考虑为 letmbootstrap 贡献。本文档讲怎么提一份干净落地的 PR。简短版：**先给自己写一份单任务契约**，再提 PR。详细版在下面。
 
 ## TL;DR
 
-1. Read [`AGENTS.md`](AGENTS.md) (the constitution) and [`ARCHITECTURE.md`](ARCHITECTURE.md) (the shape).
-2. Read [`docs/methodology.md`](docs/methodology.md) end-to-end (≤ 1500 words, takes 5 minutes).
-3. Check [`docs/decisions/`](docs/decisions/) — your concern may already be addressed.
-4. If you're changing anything non-trivial, fill a [single-task contract](templates/single-task-contract.md) and include it in the PR description.
-5. If your change conflicts with a decision, write a new decision record. Don't argue in PR comments.
+1. 读 [`AGENTS.md`](AGENTS.md)（宪法）和 [`ARCHITECTURE.md`](ARCHITECTURE.md)（形状）。
+2. 通读 [`docs/methodology.md`](docs/methodology.md)（≤ 1500 字，5 分钟）。
+3. 查 [`docs/decisions/`](docs/decisions/) —— 你关心的事可能已有定论。
+4. 如果是非平凡变更，先填一份 [单任务契约](templates/single-task-contract.md) 并放进 PR 描述。
+5. 如果你的改动和现有决策冲突，写一条新决策记录。不要在 PR 评论里争论。
 
-## Code of conduct
+## 行为准则
 
-By participating, you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Enforcement is by the maintainers.
+参与即视为同意 [行为准则](CODE_OF_CONDUCT.md)。由维护者执行。
 
-## What we accept
+## 我们接受什么
 
-| Type | Bar |
+| 类型 | 门槛 |
 |---|---|
-| **Bug fix** (typo, broken link, misformatted table) | Trivial PR — no contract needed. Manual dry-run must still pass. |
-| **Documentation clarification** | Send a PR with a before/after explanation in the description. |
-| **New platform support in `scripts/install.sh`** | PR must add a detection function, update [`docs/agent-compatibility.md`](docs/agent-compatibility.md), and pass the dry-run test on the platform you can verify. |
-| **New template** | Must come with a worked example in `examples/`. See the AGENTS.md "Definition of Done". |
-| **New skill in `skills/`** | Must have a clear `description:` frontmatter trigger. Trigger phrases in Chinese and English are encouraged. |
-| **New methodology rule** | Must update the narrative in `docs/methodology.md` (≤ 1500 words) and ship as a decision record explaining what changed. |
-| **Anything that introduces destructive operations** | **Rejected at PR review.** See [decision 0001](docs/decisions/0001-keep-skill-non-destructive.md). |
-| **Uninstall / reset / force flags** | **Rejected at PR review.** Same decision. |
+| **Bug 修复**（错别字、断链、表格格式问题） | 平凡 PR —— 不需要契约。干跑必须通过。 |
+| **文档澄清** | 提 PR 时描述里附前后对比。 |
+| **`scripts/install.sh` 加新平台支持** | PR 必须加检测函数、更新 [`docs/agent-compatibility.md`](docs/agent-compatibility.md)，并在你能量到的平台上跑通干跑。 |
+| **新模板** | 必须配套 `examples/` 下的可用示例。见 AGENTS.md 的"完成标准"。 |
+| **`skills/` 新技能** | 必须有清晰的 `description:` frontmatter 触发。中英文触发短语都鼓励。 |
+| **新方法论规则** | 必须更新 [`docs/methodology.md`](docs/methodology.md) 叙事（≤ 1500 字）并配一条决策记录说明改了什么。 |
+| **引入破坏性操作的任何东西** | **PR 评审时拒。** 见 [决策 0001](docs/decisions/0001-keep-skill-non-destructive.md)。 |
+| **卸载 / reset / force 标志** | **PR 评审时拒。** 同一条决策。 |
 
-## How to write the PR
+## 怎么写 PR
 
-The PR description is the single-task contract. Use the template:
+PR 描述就是单任务契约。用这个模板：
 
 ```markdown
-## Task
-<one-sentence verb + noun>
+## 任务
+<一句话：动词 + 名词>
 
-## Required reading
-- <links the reviewer should read first>
+## 必读
+- <评审者先读的链接>
 
-## Out of scope (do NOT do)
-- <boundaries — what this PR is NOT>
+## 不做（do NOT do）
+- <边界 —— 本 PR 不做什么>
 
-## Acceptance criteria
-- [ ] <observable>
-- [ ] <observable>
-- [ ] `./scripts/install.sh` dry-run passes
+## 完成标准
+- [ ] <可观察的>
+- [ ] <可观察的>
+- [ ] 干跑通过
 
-## Decision record
-<linked docs/decisions/NNNN-*.md, if this PR contradicts an existing decision>
-<"none", if it doesn't>
+## 决策记录
+<链接到 docs/decisions/NNNN-*.md，如果本 PR 跟现有决策冲突>
+<如果不冲突，写"无">
 ```
 
-If you can't fill this in, the PR isn't ready. Refine until you can — that's the methodology working.
+填不出来，PR 就还没准备好。继续打磨直到能填 —— 这就是方法论在起作用。
 
-## Testing your change
+## 测你的改动
 
-There is no test suite. The verification steps are:
+没有测试套件。验证步骤是：
 
 ```bash
-# 1. Skill syntax / frontmatter sanity
-head -5 skills/letmbootstrap/SKILL.md  # should have name: + description:
+# 1. 技能语法 / frontmatter 健康
+head -5 skills/letmbootstrap/SKILL.md  # 应该看到 name: + description:
 
-# 2. Installer dry-run
-./scripts/install.sh                  # dry-run for every detected platform
+# 2. 安装器干跑
+./scripts/install.sh                  # 干跑所有检测到的平台
 
-# 3. Installer static guard (catches rm/unlink/mv/rmdir regressions)
+# 3. 安装器静态守卫（抓 rm/unlink/mv/rmdir 回归）
 bash -n scripts/install.sh && echo OK
-```
 
-If you added a new platform, also test `--apply --platform <your-platform>` against a temp HOME directory:
-
-```bash
+# 4. 如果加了新平台，用临时 HOME 测 --apply
 TMP=$(mktemp -d)
 mkdir -p "$TMP/.claude/skills"
 HOME="$TMP" ./scripts/install.sh --apply --platform claude-code
-ls "$TMP/.claude/skills/letmbootstrap/SKILL.md"  # should exist
-# cleanup
+ls "$TMP/.claude/skills/letmbootstrap/SKILL.md"  # 应该存在
+# 清理
 mavis-trash "$TMP"
 ```
 
-## Commit messages
+## Commit 信息
 
-We use [Conventional Commits](https://www.conventionalcommits.org/). Examples:
+我们用 [Conventional Commits](https://www.conventionalcommits.org/)。示例：
 
-- `docs: clarify non-destructive guarantee in SKILL.md`
-- `feat: add Gemini CLI platform support`
-- `fix: static guard false-positive on `^rm -rf` in comment`
-- `refactor: split install.sh into platform detectors`
-- `chore: bump version to 0.2.0`
+- `docs: 在 SKILL.md 澄清非破坏性保证`
+- `feat: 加 Gemini CLI 平台支持`
+- `fix: 静态守卫在注释里 ^rm -rf 的误报`
+- `refactor: 把 install.sh 拆成平台检测器`
+- `chore: 版本 bump 到 0.2.0`
 
-Breaking changes to the skill API (`SKILL.md` frontmatter or template format) must include `!` after the type and a `BREAKING CHANGE:` footer.
+对技能 API（`SKILL.md` frontmatter 或模板格式）的破坏性变更必须在类型后加 `!` 并加 `BREAKING CHANGE:` 页脚。
 
-## Adding a decision record
+## 加决策记录
 
-If your change touches a settled convention, write a decision record first:
+如果你的改动动了已敲定的约定，先写决策记录：
 
 ```bash
-# Copy the template
-cp templates/decision.md.template docs/decisions/NNNN-<short-kebab-title>.md
+# 复制模板
+cp templates/decision.md.template docs/decisions/NNNN-<短横线小标题>.md
 
-# Fill in:
-#   Status:        YYYY-MM-DD — proposed | implemented | rejected — <reason>
-#   Context:       the problem, written so it stands without the solution
-#   Decision:      present tense, factual, verifiable
-#   Alternatives:   mandatory; real alternatives only
+# 填写：
+#   Status:        YYYY-MM-DD — proposed | implemented | rejected — <理由>
+#   Context:       问题，写得让方案不出现也能读懂
+#   Decision:      现在时、事实性、可验证
+#   Alternatives:  必填；必须是真实方案
 ```
 
-The number is the next available `NNNN` in `docs/decisions/`. Sort order is creation order, not topic order — this prevents bikeshedding about categorization.
+数字是 `docs/decisions/` 里下一个可用的 `NNNN`。按创建顺序排，不按主题 —— 这避免给分类做无意义的争论。
 
-Once the decision record exists, link it from your PR description.
+决策记录落地后，从 PR 描述链接过去。
 
-## Review process
+## 评审流程
 
-1. **Maintainer reviews within 7 days.** If you don't hear back, ping.
-2. **Manual dry-run passes.** `./scripts/install.sh` (dry-run) must succeed on every detected platform before merge.
-3. **Two approvals for non-trivial changes.** Documentation-only changes need one approval.
-4. **Squash-merge to `main`.** Commit history of the merged commit should match the PR title.
+1. **维护者 7 天内评审。** 没回音就催。
+2. **手动干跑通过。** `./scripts/install.sh`（干跑）在每个检测到的平台必须成功，才合并。
+3. **非平凡变更要两个 approve。** 纯文档变更一个 approve 即可。
+4. **squash-merge 到 `main`。** 合并后 commit 的历史应与 PR 标题一致。
 
-## Release process
+## 发版流程
 
-Maintainers cut a release when something material changes:
+维护者在有实质变化时发版：
 
-1. Bump version in [`CHANGELOG.md`](CHANGELOG.md) and tag.
-2. The skill's `SKILL.md` does not embed a version — version is tracked in `CHANGELOG.md` and `git tags`. This keeps the installable payload minimal.
-3. If the change affects the skill's external behavior (frontmatter, body), it's a minor version bump. If it adds a new platform, it's a minor version bump. Bug fixes that don't change behavior are patch.
+1. 在 [`CHANGELOG.md`](CHANGELOG.md) bump 版本号并打 tag。
+2. 技能的 `SKILL.md` 不嵌版本号 —— 版本跟踪在 `CHANGELOG.md` 和 `git tags`。这保持安装包最小。
+3. 如果改动影响技能的外部行为（frontmatter、正文），至少 minor bump。如果加新平台，minor bump。修不改变行为的 bug 是 patch。
 
-## Asking a question
+## 提问
 
-- Open an issue. Use the question template if one exists; otherwise a clear subject line.
-- For security issues, see `SECURITY.md`. Do not file public issues for security reports.
+- 开 issue。题目写清楚。
+- 安全问题见 `SECURITY.md`。不要在公开 issue 上报安全问题。
 
-## What this guide is not
+## 本指南不是
 
-- **Not a license.** See [`LICENSE`](LICENSE).
-- **Not a contract.** The maintainers reserve the right to reject any PR for any reason.
-- **Not an excuse for low bar.** The methodology is small because every piece is load-bearing. New additions need to justify themselves.
+- **不是许可证。** 见 [`LICENSE`](LICENSE)。
+- **不是合同。** 维护者保留因任何理由拒任何 PR 的权利。
+- **不是降标准借口。** 方法论小是因为每块都是承重的。新增需要证明自己值得加。

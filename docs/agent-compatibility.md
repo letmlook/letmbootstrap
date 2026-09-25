@@ -1,143 +1,145 @@
-# Agent Compatibility Matrix
+<!-- 语言：中文（默认） | English mirror: docs/agent-compatibility.en.md -->
 
-> Which Agents can run the letmbootstrap skill, and how.
+# Agent 兼容性矩阵
+
+> 哪些 Agent 能跑 letmbootstrap 技能，以及怎么跑。
 
 ## TL;DR
 
-The skill is **a single `SKILL.md` file with YAML frontmatter**. Any Agent that:
+技能就是 **一个带 YAML frontmatter 的 `SKILL.md` 文件**。任何：
 
-1. Loads `SKILL.md` files from a known directory, and
-2. Parses `name:` + `description:` from the frontmatter, and
-3. Matches user input against the `description:` to decide when to invoke,
+1. 从已知目录加载 `SKILL.md`，并
+2. 解析 frontmatter 里的 `name:` + `description:`，并
+3. 把用户输入和 `description:` 匹配以决定何时调用，
 
-…can run letmbootstrap with zero modification. The skill body uses only standard markdown and explicit step-by-step procedure — no platform-specific syntax.
+…的 Agent 都能零修改地跑 letmbootstrap。技能正文只用标准 markdown 和逐步流程 —— 无平台特有语法。
 
-If your Agent doesn't have a skills concept, see [§ Agents without native skill support](#agents-without-native-skill-support).
+如果你的 Agent 没有"技能"概念，见 [§ 没有原生技能支持的 Agent](#没有原生技能支持的-agent)。
 
-## Matrix
+## 矩阵
 
-| Agent | Skill support | Install path | Trigger syntax | Notes |
+| Agent | 技能支持 | 安装路径 | 触发语法 | 备注 |
 |---|---|---|---|---|
-| **MiniMax Code / Mavis** | ✅ native | `~/.minimax/agents/<name>/skills/` | trigger phrase match | recommended host |
-| **Claude Code** | ✅ native | `~/.claude/skills/` | trigger phrase match | most polished skill UX |
-| **OpenAI Codex CLI** | ⚠️ partial | `.agent-skills/` per-project, or `~/.codex/skills/` (newer versions) | trigger phrase match | version-dependent; paste-on-invoke as fallback |
-| **Cursor** | ✅ native | `.cursor/skills/` per-project | trigger phrase match | per-project only |
-| **Gemini CLI** | ✅ native | `~/.gemini/skills/` | trigger phrase match | global only |
-| **Aider** | ❌ no native skills | `.aider/conventions.md` reference | manual / paste-on-invoke | conventions-file workaround |
-| **Devin** | ✅ native | `.devin/skills/` per-project | session-prompt reference | per-project only |
-| **OpenCode** | ✅ native | `.opencode/skills/` or `~/.config/opencode/skills/` | trigger phrase match | both scopes work |
-| **Windsurf** | ⚠️ via AGENTS.md | `.windsurf/` per-project | inline in AGENTS.md | partial — see notes |
-| **Continue.dev** | ⚠️ via config | `~/.continue/config.json` | inline reference | partial |
-| **Cline / Roo Code** | ⚠️ via custom instructions | `.clinerules` / `.roo/` | inline | partial |
+| **MiniMax Code / Mavis** | ✅ 原生 | `~/.minimax/agents/<名>/skills/` | 触发短语匹配 | 推荐宿主 |
+| **Claude Code** | ✅ 原生 | `~/.claude/skills/` | 触发短语匹配 | 技能 UX 最打磨 |
+| **OpenAI Codex CLI** | ⚠️ 部分 | 按项目 `.agent-skills/`，或 `~/.codex/skills/`（新版本） | 触发短语匹配 | 看版本；回退是调用时粘贴 |
+| **Cursor** | ✅ 原生 | 按项目 `.cursor/skills/` | 触发短语匹配 | 只能按项目 |
+| **Gemini CLI** | ✅ 原生 | `~/.gemini/skills/` | 触发短语匹配 | 只能全局 |
+| **Aider** | ❌ 没有原生技能 | `.aider/conventions.md` 引用 | 手动 / 调用时粘贴 | 约定文件 workaround |
+| **Devin** | ✅ 原生 | 按项目 `.devin/skills/` | 会话提示引用 | 只能按项目 |
+| **OpenCode** | ✅ 原生 | `.opencode/skills/` 或 `~/.config/opencode/skills/` | 触发短语匹配 | 两种范围都行 |
+| **Windsurf** | ⚠️ 通过 AGENTS.md | 按项目 `.windsurf/` | 在 AGENTS.md 内联 | 部分支持 —— 见备注 |
+| **Continue.dev** | ⚠️ 通过配置 | `~/.continue/config.json` | 内联引用 | 部分支持 |
+| **Cline / Roo Code** | ⚠️ 通过自定义指令 | `.clinerules` / `.roo/` | 内联 | 部分支持 |
 
-> Coverage here is based on what each platform documented at the time of writing. If a row is wrong, open an issue — we treat this matrix as living documentation.
+> 覆盖范围基于撰写时各平台的文档。如果某行错，开个 issue —— 我们把这份矩阵当活的文档维护。
 
-## Per-platform notes
+## 各平台备注
 
 ### MiniMax Code / Mavis
 
-- Native `skill` tool reads `~/.minimax/agents/<agent-name>/skills/<skill-name>/SKILL.md`.
-- Frontmatter contract: `name:` + `description:`.
-- Trigger phrase matching against `description:` is done by the runtime, not by the Agent itself.
-- Skill content is read into context when triggered; the body is the procedure.
-- **Recommended Agent name for hosting letmbootstrap:** the Agent you use for project bootstrap. Default: `mavis`.
+- 原生 `skill` 工具读 `~/.minimax/agents/<agent-名>/skills/<技能名>/SKILL.md`。
+- Frontmatter 契约：`name:` + `description:`。
+- 触发短语匹配 `description:` 由运行时做，不是 Agent 自己做。
+- 触发时技能正文读入上下文；正文就是流程。
+- **推荐承载 letmbootstrap 的 Agent 名：** 用于项目引导的 Agent。默认 `mavis`。
 
 ### Claude Code
 
-- Native skill support: reads `~/.claude/skills/` (global) and `./.claude/skills/` (per-project).
-- Same frontmatter contract.
-- Triggers: matches `description:` against user input.
+- 原生技能支持：读 `~/.claude/skills/`（全局）和 `./.claude/skills/`（按项目）。
+- 同样的 frontmatter 契约。
+- 触发：`description:` 匹配用户输入。
 
 ### OpenAI Codex CLI
 
-- Older Codex versions: no skills directory; use paste-on-invoke.
-- Newer Codex versions: support `~/.codex/skills/`. Per-project `.agent-skills/` is the safe fallback that always works.
-- When in doubt, reference the skill path in your project's `AGENTS.md`:
+- 老 Codex 版本：无技能目录；用调用时粘贴。
+- 新 Codex 版本：支持 `~/.codex/skills/`。按项目 `.agent-skills/` 是永远可用的安全回退。
+- 不确定时，在项目的 `AGENTS.md` 里引用技能路径：
 
 ```markdown
-## Skills
-Skills in this project live in `.agent-skills/`. Read `<skill>/SKILL.md` when the trigger phrase matches.
+## 技能
+本项目里的技能在 .agent-skills/。触发短语匹配时读 <技能>/SKILL.md。
 ```
 
 ### Cursor
 
-- Per-project only. No global skills directory.
-- Reads `./.cursor/skills/<name>/SKILL.md`.
-- Skills picked up on session start.
+- 只能按项目。没有全局技能目录。
+- 读 `./.cursor/skills/<名>/SKILL.md`。
+- 技能在会话启动时加载。
 
 ### Gemini CLI
 
-- Reads `~/.gemini/skills/`.
-- Same frontmatter contract.
-- Global scope.
+- 读 `~/.gemini/skills/`。
+- 同样的 frontmatter 契约。
+- 全局范围。
 
 ### Aider
 
-- No native skills concept. Aider reads `~/.aider/conventions.md` and per-project `.aider/conventions.md`.
-- Workaround: copy the SKILL.md into your conventions file (or reference its path), and Aider will follow it when triggered.
-- For one-off invocations, paste `SKILL.md` body into chat.
+- 没有原生"技能"概念。Aider 读 `~/.aider/conventions.md` 和按项目 `.aider/conventions.md`。
+- Workaround：把 SKILL.md 拷到你的约定文件（或引用它的路径），Aider 触发时会跟它。
+- 一次性调用，把 `SKILL.md` 正文粘到对话里。
 
 ### Devin
 
-- Reads `./.devin/` files per session.
-- Per-project install.
-- Reference the skill in your session prompt: "When I say 'letmbootstrap init', read `.devin/skills/letmbootstrap/SKILL.md`."
+- 按会话读 `./.devin/` 文件。
+- 按项目装。
+- 在会话提示里引用技能："当我说 'letmbootstrap init'，读 `.devin/skills/letmbootstrap/SKILL.md`。"
 
 ### OpenCode
 
-- Supports both per-project (`.opencode/skills/`) and global (`~/.config/opencode/skills/`).
-- Same frontmatter contract.
+- 同时支持按项目（`.opencode/skills/`）和全局（`~/.config/opencode/skills/`）。
+- 同样的 frontmatter 契约。
 
 ### Windsurf
 
-- Doesn't have a skills directory per se, but reads `.windsurf/` config and project-level rules.
-- Workaround: include a reference in your project's `AGENTS.md` or `.windsurfrules`.
+- 严格来说没有技能目录，但读 `.windsurf/` 配置和项目级规则。
+- Workaround：在项目的 `AGENTS.md` 或 `.windsurfrules` 里加引用。
 
 ### Continue.dev
 
-- Configured via `~/.continue/config.json` with custom slash commands.
-- Workaround: register letmbootstrap as a slash command pointing at `SKILL.md`.
+- 通过 `~/.continue/config.json` 的自定义 slash 命令配置。
+- Workaround：把 letmbootstrap 注册为指向 `SKILL.md` 的 slash 命令。
 
 ### Cline / Roo Code
 
-- Custom instructions via `.clinerules` or `.roo/` config.
-- Workaround: reference the SKILL.md path in your custom instructions.
+- 通过 `.clinerules` 或 `.roo/` 配置的自定义指令。
+- Workaround：在自定义指令里引用 SKILL.md 路径。
 
-## Agents without native skill support
+## 没有原生技能支持的 Agent
 
-If your Agent isn't listed above (or has only partial support), the universal fallback is **paste-on-invoke**:
+如果你的 Agent 没列在上面（或只部分支持），万能回退是 **调用时粘贴**：
 
-1. Copy `skills/letmbootstrap/SKILL.md` content.
-2. Paste it into chat with: "Follow this procedure. Start from Step 1."
-3. The Agent will execute the steps as if it had loaded it natively.
+1. 复制 `skills/letmbootstrap/SKILL.md` 内容。
+2. 粘到对话里说："按这个流程执行。从第 1 步开始。"
+3. Agent 会像原生加载那样跑流程。
 
-This is uglier than native install but works everywhere. The skill is designed to be self-contained for exactly this reason.
+比原生安装丑但到处能用。技能正是为此设计成自包含的。
 
-## What the skill assumes about its host
+## 技能对宿主的假设
 
-The skill body references a few things that may or may not exist on every Agent:
+技能正文引用了几样东西，不同 Agent 不一定有：
 
-| Assumption | Fallback |
+| 假设 | 回退 |
 |---|---|
-| Can read absolute paths | Skill body uses absolute path `/Users/letmlook/code/letmbootstrap/`. If your Agent can't, symlink it into a path it can read. |
-| Has a `question UI` / `ask_user` tool | Falls back to plain questions in chat. |
-| Can write files in the current project | Required for the bootstrap to work. If the Agent is read-only, the bootstrap fails by design. |
-| Can run `ls -la` / `mkdir -p` | Standard shell. If the Agent can't run shell, the skill degrades to manual copy-paste. |
+| 能读绝对路径 | 技能正文用绝对路径 `/Users/letmlook/code/letmbootstrap/`。如果你的 Agent 不能，软链到它能读的路径。 |
+| 有 `question UI` / `ask_user` 工具 | 回退到对话里直接问。 |
+| 能在当前项目写文件 | 引导必需。如果 Agent 只读，引导按设计失败。 |
+| 能跑 `ls -la` / `mkdir -p` | 标准 shell。如果 Agent 不能跑 shell，技能降级到手动复制粘贴。 |
 
-These are documented as explicit assumptions, not hidden dependencies. Every Agent that can read & write files in a project directory can run the skill.
+这些是显式假设，不是隐藏依赖。每个能读写项目文件目录的 Agent 都能跑这个技能。
 
-## How to add support for a new Agent
+## 怎么加新 Agent 的支持
 
-Three steps:
+三步：
 
-1. **Identify the install path.** Check the Agent's docs for "skills", "extensions", "custom instructions", or similar.
-2. **Add a row to the table above.** Include path, trigger syntax, and any quirks.
-3. **Add a section to `INSTALL.md` and `docs/installation-guide.md`** with a copy-paste install snippet.
+1. **确定安装路径。** 看 Agent 文档里的"技能"、"扩展"、"自定义指令"等。
+2. **在上表加一行。** 包括路径、触发语法、任何特殊性。
+3. **在 `INSTALL.md` 和 `docs/installation-guide.md` 加一节** 附复制粘贴安装片段。
 
-PRs welcome. The installer auto-detects based on directory markers; adding a new platform means adding a detection rule in `scripts/install.sh` and a documentation row.
+欢迎提 PR。安装器按目录标记自动检测；加新平台意味着在 `scripts/install.sh` 加一条检测规则 + 文档加一行。
 
-## What this matrix does NOT cover
+## 本矩阵不覆盖什么
 
-- **Authentication / billing** of any Agent — out of scope.
-- **Skill marketplaces** — letmbootstrap is not on any marketplace by design. Install is always direct from this repo.
-- **Cross-Agent skill translation** — if a target Agent uses different frontmatter keys, you write a thin wrapper. We don't ship wrappers; the skill is portable as-is.
+- **任何 Agent 的认证 / 计费** — 范围外。
+- **技能市场** — letmbootstrap 刻意不在任何市场。安装一律直接来自本仓库。
+- **跨 Agent 技能翻译** — 如果目标 Agent 用不同的 frontmatter 键，你自己写个薄 wrapper。我们不发 wrapper；技能本身即可移植。

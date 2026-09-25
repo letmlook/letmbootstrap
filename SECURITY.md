@@ -1,59 +1,61 @@
-# Security Policy
+<!-- 语言：中文（默认） | English mirror: SECURITY.en.md -->
 
-## Scope
+# 安全策略
 
-This repo contains documentation, templates, one shell script (`scripts/install.sh`), and one Agent skill (`skills/letmbootstrap/SKILL.md`). There is no runtime, no server, no network code.
+## 范围
 
-The security model is therefore narrow:
+本仓库包含文档、模板、一个 shell 脚本（`scripts/install.sh`）、一个 Agent 技能（`skills/letmbootstrap/SKILL.md`）。无运行时、无服务端、无网络代码。
 
-| Asset | Risk |
+因此安全模型很窄：
+
+| 资产 | 风险 |
 |---|---|
-| `scripts/install.sh` | Shell injection if a user passes untrusted arguments. Mitigated by `set -euo pipefail` and minimal flag parsing. |
-| `skills/letmbootstrap/SKILL.md` | Indirect — if a user installs a forked version that contains a malicious payload, the skill runs in their Agent's context. Mitigated by always installing from this repo, not forks. |
-| Templates | Pure markdown — no execution risk. |
+| `scripts/install.sh` | 如果用户传入不受信的参数，可能 shell 注入。用 `set -euo pipefail` 和最小化标志解析缓解。 |
+| `skills/letmbootstrap/SKILL.md` | 间接风险 —— 如果用户装了某个含恶意 payload 的 fork 版，技能会在他们 Agent 的上下文中执行。缓解方式：始终从本仓库安装，不用 fork。 |
+| 模板 | 纯 markdown —— 无执行风险。 |
 
-There are no credentials, no tokens, no build artifacts.
+无凭证、无 token、无构建产物。
 
-## Supported versions
+## 支持的版本
 
-Only the latest release on `main` is supported with security fixes. Older tags receive no patches.
+只有 `main` 上最新的 release 接受安全补丁。旧 tag 不再维护。
 
-## Reporting a vulnerability
+## 上报漏洞
 
-Please **do not** open a public GitHub issue for security reports.
+**请勿**为安全报告开公开 GitHub issue。
 
-Email the maintainer at the address in their GitHub profile, with subject prefix `[letmbootstrap security]`. Include:
+给维护者发邮件，邮箱在他们的 GitHub profile 上，主题前缀 `[letmbootstrap security]`。包括：
 
-- A description of the issue
-- Reproduction steps
-- Impact assessment
+- 问题描述
+- 复现步骤
+- 影响评估
 
-You should receive an acknowledgement within 7 days. The maintainer will assess and either:
+7 天内应收到确认。维护者评估后会：
 
-- Patch and release (typical timeline: 14 days from acknowledgement), or
-- Decline with rationale if the report is out of scope.
+- 修复并发布（典型时间线：从确认起 14 天），或
+- 以理由拒绝（如果超出范围）。
 
-## Out of scope
+## 超出范围
 
-The following are intentionally not part of this repo's security model and will not be patched here:
+以下刻意不在本仓库安全模型之内，不会在这里修：
 
-- **Agent platforms themselves** (Claude Code, Mavis, Codex CLI, etc.). Report those to the platform maintainer.
-- **Skill marketplaces** that might re-host this skill. We don't publish to marketplaces by design — see [`docs/decisions/0001-keep-skill-non-destructive.md`](docs/decisions/0001-keep-skill-non-destructive.md).
-- **User projects** that adopted the methodology. Their security is their own.
-- **Forks.** If you fork this repo, you maintain your fork.
+- **Agent 平台自身**（Claude Code、Mavis、Codex CLI 等）。向平台维护者上报。
+- **可能转载本技能的市场**。我们刻意不在市场发 —— 见 [`docs/decisions/0001-keep-skill-non-destructive.md`](docs/decisions/0001-keep-skill-non-destructive.md)。
+- **已采用方法论的用户项目**。它们的安全是它们自己的事。
+- **Fork**。如果你 fork 本仓库，你维护你的 fork。
 
-## The non-destructive guarantee, restated for security
+## 非破坏性保证，重述为安全属性
 
-The non-destructive guarantee from [decision 0001](docs/decisions/0001-keep-skill-non-destructive.md) is also a security property:
+[决策 0001](docs/decisions/0001-keep-skill-non-destructive.md) 的非破坏性保证同时也是安全属性：
 
-- The skill cannot `rm` user files without consent.
-- The installer cannot `rm` user files under any flag.
-- The static guard in `scripts/install.sh` aborts if a destructive pattern ever appears in the script source.
+- 技能未经同意不能 `rm` 用户文件。
+- 安装器在任何标志下都不能 `rm` 用户文件。
+- `scripts/install.sh` 中的静态守卫在脚本源码出现破坏性模式时立即中止。
 
-This is by design. If a future PR weakens this, treat it as a security regression.
+这是设计如此。如果未来的 PR 弱化了这个，把它当安全回归。
 
-## What this policy is not
+## 本策略不是
 
-- **Not a CVE-bidding process.** This is a small docs repo; we don't run a coordinated disclosure program.
-- **Not a bug bounty.** No compensation is offered.
-- **Not a promise of zero issues.** The repo is small enough to read in one sitting — please do, and report what you find.
+- **不是 CVE 投标流程。** 这是个小文档仓库；不跑协调披露。
+- **不是漏洞赏金。** 没有报酬。
+- **不是零问题的承诺。** 仓库足够小可以一次读完 —— 请读，并报告你发现的。

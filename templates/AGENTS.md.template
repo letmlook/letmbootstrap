@@ -1,61 +1,61 @@
-# AGENTS.md — <PROJECT_NAME>
+# AGENTS.md — <项目名>
 
-## Project is
-<ONE SENTENCE: what this project does and for whom. Example: "A CLI that converts markdown files to Notion pages via the Notion API.">
+## Project is（项目是什么）
+<一句话：这个项目做什么、为谁做。示例："一个通过 Notion API 把 markdown 转成 Notion 页面的 CLI。">
 
-## Stack
-- Language: <e.g., TypeScript 5.x>
-- Runtime: <e.g., Node 22+>
-- Framework: <e.g., none / Express / Hono>
-- Package manager: <e.g., pnpm>
-- Test: <e.g., vitest>
+## Stack（技术栈）
+- 语言：<例如，TypeScript 5.x>
+- 运行时：<例如，Node 22+>
+- 框架：<例如，无 / Express / Hono>
+- 包管理器：<例如，pnpm>
+- 测试：<例如，vitest>
 
-## Project is NOT
-- <Anti-goal 1: e.g., "A web service. CLI only.">
-- <Anti-goal 2: e.g., "Persistent storage. Stateless transformations only.">
-- <Anti-goal 3: e.g., "Multi-user auth. Single-user local tool.">
+## Project is NOT（项目不是什么）
+- <反目标 1：例如，"Web 服务。仅 CLI。">
+- <反目标 2：例如，"持久化存储。仅无状态转换。">
+- <反目标 3：例如，"多用户鉴权。单用户本地工具。">
 
-## Required reading (in order)
-1. `README.md` — overview
-2. `docs/decisions/` — settled decisions (don't re-litigate; if you must change one, write a new decision file)
-3. <link to architecture doc, if any>
-4. <link to contributing guide, if any>
+## Required reading (in order)（必读，按顺序）
+1. `README.md` — 总览
+2. `docs/decisions/` — 已敲定的决策（不要重新争论；要改的话写新决策文件）
+3. <架构文档链接，如果有>
+4. <贡献指南链接，如果有>
 
-## Where new code goes
-| Goal | Location |
+## Where new code goes（新代码放哪）
+| 目标 | 位置 |
 |---|---|
-| New CLI command | `src/commands/` |
-| New HTTP handler | `src/api/handlers/` |
-| New data source adapter | `src/sources/` |
-| New CLI flag on existing command | edit `src/commands/<name>.ts` |
-| New test fixture | `tests/fixtures/` |
-| New documentation page | `docs/` |
-| New decision | `docs/decisions/NNNN-<short>.md` |
+| 新 CLI 命令 | `src/commands/` |
+| 新 HTTP handler | `src/api/handlers/` |
+| 新数据源适配器 | `src/sources/` |
+| 给现有命令加 CLI flag | 编辑 `src/commands/<名>.ts` |
+| 新测试 fixture | `tests/fixtures/` |
+| 新文档页 | `docs/` |
+| 新决策 | `docs/decisions/NNNN-<短>.md` |
 
-## Definition of Done (per PR)
-- [ ] Change has corresponding test(s) that fail without the change
-- [ ] All tests in the affected package pass (`pnpm --filter <pkg> test`)
-- [ ] `pnpm typecheck` passes (or `tsc --noEmit`)
-- [ ] Lint passes (`pnpm lint`)
-- [ ] Docs / JSDoc / examples updated in the same diff if behavior changed
-- [ ] `pnpm run change-scope` shows the diff stays within the stated scope
-- [ ] No drive-by refactors in unrelated files
+## Definition of Done（每个 PR 的完成标准）
+- [ ] 改动有对应的测试，去掉改动就挂
+- [ ] 受影响包的所有测试通过（`pnpm --filter <pkg> test`）
+- [ ] `pnpm typecheck` 通过（或 `tsc --noEmit`）
+- [ ] Lint 通过（`pnpm lint`）
+- [ ] 行为变化时，同一 diff 里更新了文档 / JSDoc / 示例
+- [ ] `pnpm run change-scope` 显示 diff 仍在声明的范围内
+- [ ] 没有无关文件的顺手 refactor
 
-## Forbidden
-- Adding a new top-level dependency without writing/updating a decision note
-- "Helpfully" extending scope beyond what the task asked
-- Skipping pre-commit/pre-push hooks with `--no-verify`
-- Touching `vendor/`, `.git/`, `dist/`, `node_modules/`, `*.lock` (unless that's the task)
-- Tests that pass when the code is broken (assertion-free tests)
-- Merging to main without all gates green
+## Forbidden（禁区）
+- 加新的顶层依赖不写 / 更新决策记录
+- "贴心地"扩展任务范围
+- 用 `--no-verify` 跳过 pre-commit / pre-push 钩子
+- 动 `vendor/`、`.git/`、`dist/`、`node_modules/`、`*.lock`（除非这就是任务）
+- 测试通过但代码是坏的（无断言的测试）
+- 闸门不全绿就合 main
 
-## Decisions
-Before doing anything significant, run `ls docs/decisions/`. If your concern is addressed, follow the decision. If you want to change it, **write a new decision file** — don't argue in PR comments or chat.
+## Decisions（决策）
+做任何大改动前，先跑 `ls docs/decisions/`。如果你的关切已被记录，跟着走。如果要改，**写一条新决策文件** —— 不要在 PR 评论或对话里争论。
 
-## Tasks
-Before starting any non-trivial task, fill a single-task contract (see `templates/single-task-contract.md`). Keep it with the task in chat or as a scratch file.
+## Tasks（任务）
+任何非平凡任务开始前，先填一份单任务契约（见 `templates/single-task-contract.md`）。和任务一起放在对话里或作为草稿文件。
 
-## Stop and ask if
-- You find yourself wanting to introduce a new pattern that isn't in `Where new code goes`
-- You find yourself wanting to relax a rule in `Forbidden`
-- You find a decision note that contradicts what the user asked — surface it and ask which wins
+## Stop and ask if（在以下情况停下问）
+- 你想引入一个"新代码放哪"里没有的新模式
+- 你想放松 `Forbidden` 里的某条规则
+- 你发现决策记录和用户要求矛盾 —— 摆出来问哪个赢

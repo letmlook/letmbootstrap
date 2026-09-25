@@ -1,43 +1,45 @@
-# 0001 — Bootstrap with letmbootstrap
+<!-- 语言：中文（默认） | English mirror: examples/letmbootstrap-self/docs/decisions/0001-bootstrap-with-letmbootstrap.en.md -->
 
-## Status
+# 0001 — 用 letmbootstrap 引导
 
-YYYY-MM-DD — implemented — letmbootstrap is now the project's collaboration methodology.
+## Status（状态）
 
-## Context
+YYYY-MM-DD — implemented — letmbootstrap 现在是本项目的协作方法论。
 
-Default Agent behavior has three failure modes when iterating on a project:
+## Context（背景）
 
-1. **Drift** — Agent doesn't know what's been decided, so it re-litigates settled choices.
-2. **Scope creep** — Agent "helpfully" extends beyond the task, touching unrelated code.
-3. **Forgotten rules** — Conventions live in chat history and evaporate between sessions.
+默认的 Agent 行为在迭代项目时有三种失效模式：
 
-The project needed a way to make project knowledge persistent and machine-readable so the Agent doesn't re-derive context every session.
+1. **跑偏** — Agent 不知道已经决定过什么，所以重新争论已敲定的选择。
+2. **Scope 蔓延** — Agent"贴心地"超出任务范围，动了无关代码。
+3. **规则遗忘** — 约定只在聊天记录里，会话之间蒸发。
 
-## Decision
+项目需要一种方式让项目知识持久化、可机读，这样 Agent 不会每次会话都重新推导上下文。
 
-Adopt the letmbootstrap 4-piece set:
+## Decision（决策）
 
-- `AGENTS.md` at the project root as the project constitution
-- `docs/decisions/` as the append-only decision log
-- `skills/` for step-by-step procedures the Agent follows without improvising
-- Single-task contract, filled in before each Agent task
+采用 letmbootstrap 4 件套：
 
-The methodology is described in [`docs/methodology.md`](../../../../docs/methodology.md).
+- 项目根下的 `AGENTS.md` 作为项目宪法
+- `docs/decisions/` 作为只能追加的决策日志
+- `skills/` 存放 Agent 不即兴发挥的逐步流程
+- 单任务契约，每次给 Agent 派任务前填写
 
-## Consequences
+方法论在 [`docs/methodology.md`](../../../../docs/methodology.md) 描述。
 
-- ✅ **Gain:** eliminates ~70% of "you forgot rule X" re-prompting. Decisions persist across sessions. New Agents onboard by reading 4 files, not by asking the user.
-- ❌ **Cost:** ~15 minutes the first time to write `AGENTS.md`; 5 minutes per change to maintain.
-- ⚠️ **Workflow change:** every non-trivial task now starts with a single-task contract (30 seconds). Every non-trivial decision now generates a decision file.
+## Consequences（影响）
 
-## Alternatives considered
+- ✅ **得到：** 消除 ~70% 的"你忘了规则 X"重复提示。决策跨会话持久。新 Agent 读 4 个文件上手，不问用户。
+- ❌ **付出：** 首次写 `AGENTS.md` ~15 分钟；每次变更维护 5 分钟。
+- ⚠️ **工作流变化：** 每个非平凡任务现在从单任务契约开始（30 秒）。每个非平凡决策现在生成决策文件。
 
-- **Ad-hoc decisions in chat:** rejected. Chat history is not durable; new Agents can't read it. The whole point is to externalize context.
-- **No methodology, status quo:** rejected. The 3 failure modes (drift, scope creep, forgotten rules) compound over time. They don't go away by hoping.
-- **Custom methodology:** rejected. Custom methodologies either grow into a framework (which this template explicitly forbids) or stay small and re-invent letmbootstrap poorly. Use the template.
-- **Heavier methodology (full docs/architecture, ADR tools, etc.):** rejected for now. The 4-piece set is the leverage point. Don't add anything until the 4 pieces are running smoothly — see [`docs/methodology.md`](../../../../docs/methodology.md) "Scaling up".
+## Alternatives considered（考虑过的方案）
 
-## Lifecycle
+- **聊天里临时决策：** 拒。聊天记录不持久；新 Agent 读不到。物化上下文是核心目标。
+- **不要方法论，保持现状：** 拒。3 种失效模式（跑偏、scope 蔓延、规则遗忘）会随时间复合。靠希望不会消失。
+- **自研方法论：** 拒。自研方法论要么膨胀成框架（本模板刻意禁止），要么停留在小规模然后拙劣地重发明 letmbootstrap。用模板。
+- **更重的方法论（完整 docs/architecture、ADR 工具等）：** 现在拒。4 件套是杠杆点。在 4 件套跑顺之前不要加 —— 见 [`docs/methodology.md`](../../../../docs/methodology.md) "升级路径"。
 
-This file is in `docs/decisions/` (implemented). If letmbootstrap is ever replaced, this file moves to `docs/decisions/rejected/` with a one-line "superseded by 00XX" note.
+## Lifecycle（生命周期）
+
+本文件在 `docs/decisions/`（implemented）。如果 letmbootstrap 永远被替换，本文件移到 `docs/decisions/rejected/` 并带一行"由 00XX 取代"的说明。

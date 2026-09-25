@@ -1,70 +1,72 @@
-# AGENTS.md — letmbootstrap (example output)
+<!-- 语言：中文（默认） | English mirror: examples/letmbootstrap-self/AGENTS.en.md -->
 
-> This is an **example** of what the letmbootstrap skill produces. The canonical, real version lives at [`AGENTS.md`](../../AGENTS.md) in the repo root.
+# AGENTS.md — letmbootstrap（示例输出）
 
-## Project is
+> 这是 **示例**，展示 letmbootstrap 技能产出什么。规范、真实版本在仓库根 [`AGENTS.md`](../../AGENTS.md)。
 
-A reusable collaboration methodology template for solo + Agent iterative development. Packages the 4-piece anti-drift setup + bootstrap skill so a new project can adopt the discipline in ~10 minutes.
+## Project is（项目是什么）
 
-## Stack
+一套可复用的协作方法论模板，专为单人 + Agent 迭代式开发设计。把 4 件套防跑偏骨架 + 引导技能打包在一起，让新项目 ~10 分钟就能采纳这套纪律。
 
-- Language: Markdown
-- Runtime: None (documentation + shell + skill definition only)
-- Framework: None
-- Package manager: None
-- Test: None (manually verified via `./scripts/install.sh --dry-run`)
+## Stack（技术栈）
 
-## Project is NOT
+- 语言：Markdown
+- 运行时：无（仅文档 + shell + 技能定义）
+- 框架：无
+- 包管理器：无
+- 测试：无（手动通过 `./scripts/install.sh --dry-run` 验证）
 
-- Not a runtime framework, CLI, or library — just docs + templates + a skill.
-- Not coupled to any specific Agent platform.
-- Not a "methodology encyclopedia" — keep each artifact short and opinionated.
+## Project is NOT（项目不是什么）
 
-## Required reading (in order)
+- 不是运行时框架、CLI 或库 —— 只是文档 + 模板 + 技能。
+- 不绑定任何特定 Agent 平台。
+- 不是"方法论百科全书" —— 每个制品都要短且有立场。
 
-1. [`README.md`](../../README.md) — what's in here and why
-2. [`docs/methodology.md`](../../docs/methodology.md) — the full narrative
-3. [`templates/`](../../templates/) — the three templates to copy
-4. [`skills/letmbootstrap/SKILL.md`](../../skills/letmbootstrap/SKILL.md) — the install procedure
+## Required reading (in order)（必读，按顺序）
 
-## Where new code goes
+1. [`README.md`](../../README.md) — 仓库里有什么、为什么
+2. [`docs/methodology.md`](../../docs/methodology.md) — 完整叙事
+3. [`templates/`](../../templates/) — 三个可复制模板
+4. [`skills/letmbootstrap/SKILL.md`](../../skills/letmbootstrap/SKILL.md) — 安装流程
 
-| Goal | Location |
+## Where new code goes（新东西放哪）
+
+| 目标 | 位置 |
 |---|---|
-| Add a new template | `templates/<name>.template` |
-| Add a new skill | `skills/<skill-name>/SKILL.md` |
-| Add a methodology rule | `docs/methodology.md` (update narrative, keep ≤ 1500 words) |
-| Add an example | `examples/<project-name>/` (small, complete) |
-| Add a decision record | `docs/decisions/NNNN-<short>.md` |
-| Add an install script | `scripts/<name>.sh` (non-destructive by default) |
+| 加新模板 | `templates/<名>.template` |
+| 加新技能 | `skills/<技能名>/SKILL.md` |
+| 加方法论规则 | `docs/methodology.md`（更新叙事，≤ 1500 字） |
+| 加示例 | `examples/<项目名>/`（小巧、完整） |
+| 加决策记录 | `docs/decisions/NNNN-<短>.md` |
+| 加安装脚本 | `scripts/<名>.sh`（默认非破坏性） |
 
-## Definition of Done (per change)
+## Definition of Done（每次变更的完成标准）
 
-- [ ] Each new template has ≥ 1 example in `examples/`
-- [ ] Each new skill has a clear `description:` frontmatter trigger
-- [ ] `docs/methodology.md` narrative still readable end-to-end (≤ 1500 words)
-- [ ] README's "Quick start" still accurate
-- [ ] `./scripts/install.sh --help` still works
-- [ ] `./scripts/install.sh` (dry-run) reports no errors
+- [ ] 每个新模板在 `examples/` 下有 ≥ 1 个示例
+- [ ] 每个新技能有清晰的 `description:` frontmatter 触发
+- [ ] `docs/methodology.md` 叙事从头到尾可读（≤ 1500 字）
+- [ ] README 的"快速上手"仍然准确
+- [ ] `./scripts/install.sh --help` 仍然可用
+- [ ] `./scripts/install.sh`（干跑）无报错
 
-## Forbidden
+## Forbidden（禁区）
 
-- Don't grow this into a meta-methodology framework.
-- Don't add templates for things not yet used by a real project.
-- Don't write "philosophy" without concrete steps.
-- Don't add destructive operations to `scripts/install.sh` (no `rm`, `unlink`, `mv`, `rmdir` in non-comment lines).
-- Don't bypass the static guard in `scripts/install.sh` — it's there on purpose.
+- 不要膨胀成"元方法论框架"。
+- 不要为真实项目还没用到的东西加模板。
+- 不要写没有具体步骤的"哲学"。
+- 不要给 `scripts/install.sh` 加破坏性操作（非注释行无 `rm`、`unlink`、`mv`、`rmdir`）。
+- 不要绕过 `scripts/install.sh` 的静态守卫 —— 它在那里是有原因的。
 
-## Decisions
+## Decisions（决策）
 
-Before adding any new convention, check [`docs/decisions/`](../../docs/decisions/). If addressed, follow it. If you want to change it, write a new decision file — don't argue in PR comments.
+添加任何新约定前，先查 [`docs/decisions/`](../../docs/decisions/)。如果已有，跟着走；如果要改，写一条新决策文件 —— 不要在 PR 评论里争论。
 
-## Tasks
+## Tasks（任务）
 
-Before any non-trivial change, fill a single-task contract (see [`templates/single-task-contract.md`](../../templates/single-task-contract.md)). Keep it with the task in chat or as a scratch file.
+任何非平凡变更前，先填一份单任务契约（见 [`templates/single-task-contract.md`](../../templates/single-task-contract.md)）。和任务一起放在对话里或作为草稿文件。
 
-## Stop and ask if
+## Stop and ask if（在以下情况停下问）
 
-- You find yourself wanting to relax a `Forbidden` rule
-- You find yourself wanting to introduce destructive operations in `scripts/`
-- You find a decision note that contradicts what the user asked — surface it and ask which wins
+- 你想放松 `Forbidden` 里的某条规则
+- 你想在 `scripts/` 里引入破坏性操作
+- 你发现决策记录和用户要求矛盾 —— 摆出来问哪个赢

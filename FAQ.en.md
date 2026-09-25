@@ -158,4 +158,4 @@ Standard, permissive, compatible with most other licenses. The repo is small eno
 
 ---
 
-This FAQ mirrors itself between [`docs/faq.md`](faq.md) and [`/FAQ.md`](../FAQ.md). Keep them in sync if you edit one.
+This FAQ mirrors itself between [`/FAQ.md`](../FAQ.md) (Chinese default) and this file (English mirror). Keep them in sync if you edit one.

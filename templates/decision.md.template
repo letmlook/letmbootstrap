@@ -1,52 +1,54 @@
-# NNNN — <Short title, kebab-case>
+# NNNN — <短标题，小写横线连接>
 
-## Status
-YYYY-MM-DD — proposed | implemented | rejected — <one-line reason>
+## Status（状态）
+YYYY-MM-DD — proposed | implemented | rejected — <一句话理由>
 
-## Context
+## Context（背景）
 
-What problem or opportunity drove this decision. Written so it stands without the proposed solution — a reader should understand the pressure even if they skip the decision.
+什么问题或机会驱动了这个决策。要写得脱离方案也能读懂 —— 读者应该即使跳过决策也能理解压力。
 
-Include:
-- The observable symptom or constraint
-- Why existing patterns don't address it
-- The deadline or trigger if any
+包括：
 
-## Decision
+- 可观察的症状或约束
+- 为什么现有模式解决不了
+- 截止时间或触发器（如果有）
 
-What we decided. Present tense, factual. State the decision so a new Agent can verify the code matches it without ambiguity.
+## Decision（决策）
 
-For example:
-- "Store session logs as JSONL in `<configDir>/sessions/session-<id>.jsonl[.zstd]`."
-- "Use SQLite for relational data, accessed via `better-sqlite3`."
-- "Reject PRs that touch `vendor/`."
+我们决定的内容。现在时、事实性。决策要让一个新 Agent 能验证代码和它对齐而不含糊。
 
-## Consequences
+例如：
 
-- ✅ **Gain:** <what this decision gives us>
-- ❌ **Cost:** <what we give up or pay for it>
-- ⚠️ **Workflow change:** <how our day-to-day work changes>
+- "把会话日志以 JSONL 存在 `<configDir>/sessions/session-<id>.jsonl[.zstd]`。"
+- "关系数据用 SQLite，通过 `better-sqlite3` 访问。"
+- "拒绝碰 `vendor/` 的 PR。"
 
-## Alternatives considered
+## Consequences（影响）
 
-Mandatory. Each genuine option gets one paragraph:
+- ✅ **得到：** <这条决策给我们什么>
+- ❌ **付出：** <我们放弃什么或为什么付出>
+- ⚠️ **工作流变化：** <我们的日常工作怎么变>
 
-- **<Alternative A>:** <why rejected — one to three sentences>
-- **<Alternative B>:** <why rejected>
-- **<Alternative C>:** <why rejected>
+## Alternatives considered（考虑过的方案）
 
-**Rule: alternatives must be real.** Don't invent strawmen. If you can't reconstruct the alternative from the record, mark the section with:
+**必填**。每个真实方案给一段：
+
+- **<方案 A>：** <拒绝原因 —— 一到三句话>
+- **<方案 B>：** <拒绝原因>
+- **<方案 C>：** <拒绝原因>
+
+**规则：方案必须是真的。** 不要编稻草人。如果你没法从记录里重建这个方案，标这一节：
 
 ```markdown
 <!-- alternatives-not-recorded (pre-format or informal decision) -->
 ```
 
-## Lifecycle
+## Lifecycle（生命周期）
 
-This file moves as the decision's status changes:
+文件随决策状态变化移动：
 
-- `proposed/NNNN-*.md` → under review, code may or may not exist
-- `implemented/NNNN-*.md` → shipped, code matches this file, facts stay in sync
-- `rejected/NNNN-*.md` → considered and declined, kept only while it prevents a plausible mistake
+- `proposed/NNNN-*.md` → 评审中，代码可能存在也可能不存在
+- `implemented/NNNN-*.md` → 已上线，代码和这文件一致，事实保持同步
+- `rejected/NNNN-*.md` → 考虑过但拒绝，只在能防止合理错误时保留
 
-When moving, update the `Status:` line and rewrite `## Decision` from future-tense (proposal) to present-tense (shipped) in the same change.
+移动时，更新 `Status:` 行，并把 `## Decision` 从未来时（提案）改写成现在时（已上线）。
